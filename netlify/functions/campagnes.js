@@ -42,6 +42,9 @@ export async function handler(event) {
       surplus_pct: d.surplus_pct || 10,
       statut: "ouverte",
       date_ouverture: new Date().toISOString(),
+      date_distribution: d.date_distribution || null,
+      heure_distribution: d.heure_distribution || null,
+      lieu_distribution: d.lieu_distribution || null,
     });
     return ok({ id: ref.id });
   }
