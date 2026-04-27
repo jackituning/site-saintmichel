@@ -820,6 +820,11 @@ async function openCampForm() {
       <div class="form-group"><label class="form-label">Année</label><input class="form-control" id="cy" type="number" value="${new Date().getFullYear()+1}"></div>
       <div class="form-group"><label class="form-label">Surplus % recommandé</label><input class="form-control" id="cs" type="number" value="10" min="0" max="100"></div>
     </div>
+    <div class="form-group"><label class="form-label">Date de distribution</label><input class="form-control" id="cd" type="date"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Heure de distribution</label><input class="form-control" id="ch" type="time" placeholder="ex: 16h00 – 18h00"></div>
+      <div class="form-group"><label class="form-label">Lieu de distribution</label><input class="form-control" id="cl" type="text" placeholder="ex: Salle polyvalente Saint Michel"></div>
+    </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
       <button class="btn btn-primary" onclick="submitCamp()">Créer</button>
@@ -827,7 +832,13 @@ async function openCampForm() {
 }
 
 async function submitCamp() {
-  const r=await api('/api/campagnes','POST',{annee:+v('cy'),surplus_pct:+v('cs')});
+  const r=await api('/api/campagnes','POST',{
+    annee:+v('cy'),
+    surplus_pct:+v('cs'),
+    date_distribution: v('cd') || null,
+    heure_distribution: v('ch') || null,
+    lieu_distribution: v('cl') || null,
+  });
   if(r.id){closeModal();go('campagnes');}else alert(r.error||'Erreur');
 }
 
