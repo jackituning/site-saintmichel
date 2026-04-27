@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uniformes · Saint Michel Annecy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F6F3;--surface:#FFFFFF;--surface2:#F0EEE9;--surface3:#E8E5DE;
+  --border:#E0DDD6;--border2:#CBC8C0;
+  --text:#18170F;--text2:#6B6860;--text3:#9B9890;
+  --blue:#1B4FD8;--blue-bg:#EEF2FF;--blue-border:#C7D2FE;
+  --green:#166534;--green-bg:#F0FDF4;--green-border:#BBF7D0;
+  --red:#991B1B;--red-bg:#FEF2F2;--red-border:#FECACA;
+  --amber:#92400E;--amber-bg:#FFFBEB;--amber-border:#FDE68A;
+  --r:8px;--r2:12px;
+  --font:'Geist',sans-serif;--mono:'Geist Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13.5px;line-height:1.5}
+#root{display:flex;height:100vh;overflow:hidden}
+aside{width:220px;flex-shrink:0;background:var(--text);display:flex;flex-direction:column;overflow-y:auto}
+.aside-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.aside-logo h1{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.02em}
+.aside-logo p{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px}
+nav{padding:10px 8px;flex:1}
+.nav-group{font-size:10px;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.25);text-transform:uppercase;padding:12px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.55);font-size:12.5px;font-weight:500;transition:.12s;margin-bottom:1px}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.nav-item.on{background:var(--blue);color:#fff}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.8}
+.aside-foot{padding:12px 8px;border-top:1px solid rgba(255,255,255,.08)}
+.btn-logout{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);padding:7px;border-radius:6px;cursor:pointer;font:500 12px var(--font);transition:.12s}
+.btn-logout:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;flex-shrink:0}
+header h2{font-size:16px;font-weight:600;letter-spacing:-.02em}
+.header-badge{font-size:11px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);padding:3px 10px;border-radius:20px;font-weight:500}
+#page{padding:24px 28px;flex:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.card-body{padding:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px}
+.stat-l{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:5px}
+.stat-v{font-size:24px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat-s{font-size:11px;color:var(--text3);margin-top:2px}
+.stat-v.blue{color:var(--blue)}
+.stat-v.green{color:var(--green)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);border:none;font:500 12.5px var(--font);cursor:pointer;transition:.12s;white-space:nowrap}
+.btn svg{width:13px;height:13px}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#1642b8}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{background:var(--surface2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid transparent}.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}.btn-danger:hover{background:#fee2e2}
+.btn-success{background:var(--green);color:#fff}.btn-success:hover{background:#14532d}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.gap-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge-gray{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:5px}
+.form-control{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--r);font:13.5px var(--font);background:var(--surface);color:var(--text);transition:border .12s,box-shadow .12s}
+.form-control:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,216,.12)}
+textarea.form-control{resize:vertical;min-height:64px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);background:var(--surface2);border-bottom:1px solid var(--border)}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg)}
+.num{font-family:var(--mono);font-size:13px;font-weight:500}
+.price{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue)}
+.alert{padding:10px 14px;border-radius:var(--r);font-size:12.5px;margin-bottom:16px;border:1px solid}
+.alert-info{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.alert-success{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.alert-warning{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.qty-table{border-collapse:collapse;width:100%;font-size:12.5px}
+.qty-table th{padding:6px 10px;text-align:center;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.qty-table th:first-child{text-align:left}
+.qty-table td{padding:5px 8px;border:1px solid var(--border);text-align:center;vertical-align:middle}
+.qty-table td:first-child{text-align:left;font-weight:500}
+.qty-input{width:50px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font:13px var(--mono);text-align:center;background:var(--surface);color:var(--text)}
+.qty-input:focus{outline:none;border-color:var(--blue)}
+.qty-input:not([value="0"]):not([value=""]){background:var(--blue-bg);border-color:var(--blue-border)}
+.total-bar{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.total-bar span:first-child{font-size:12.5px;color:var(--blue);font-weight:500}
+.total-bar strong{font-family:var(--mono);font-size:16px;color:var(--blue);font-weight:600}
+.dist-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:.12s;margin-bottom:6px;user-select:none}
+.dist-row:hover{border-color:var(--blue-border);background:var(--blue-bg)}
+.dist-row.sel{border-color:var(--blue);background:var(--blue-bg)}
+.dist-row input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px}
+.dist-info{flex:1}
+.dist-name{font-weight:600;font-size:13px}
+.dist-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.dist-total{font-family:var(--mono);font-weight:600;color:var(--blue);font-size:13px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r2);padding:24px;width:620px;max-width:95vw;max-height:92vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.18)}
+.modal-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.section-sep{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:36px;width:360px;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.login-logo{text-align:center;margin-bottom:26px}
+.login-logo h1{font-size:20px;font-weight:700;letter-spacing:-.03em}
+.login-logo p{font-size:12px;color:var(--text2);margin-top:3px}
+.empty{text-align:center;padding:44px 20px;color:var(--text3)}
+.empty p{margin-top:6px;font-size:12.5px}
+.two-col{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start}
+.right-panel .card{margin-bottom:14px}
+.search-wrap{position:relative}
+.search-wrap input{padding-left:32px}
+.search-wrap::before{content:"⌕";position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none}
+.divider{height:1px;background:var(--border);margin:14px 0}
+@media(max-width:800px){
+  aside{width:52px}
+  .aside-logo p,.nav-group,.nav-item span,.aside-foot span{display:none}
+  .nav-item{justify-content:center}
+  #page{padding:16px}
+  .two-col,.form-row,.form-row-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>Saint Michel</h1>
+      <p>Gestion des uniformes scolaires · Annecy</p>
+    </div>
+    <div id="login-err"></div>
+    <div class="form-group">
+      <label class="form-label">Identifiant</label>
+      <input class="form-control" id="lu" type="text" autocomplete="username" placeholder="admin">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe</label>
+      <input class="form-control" id="lp" type="password" autocomplete="current-password" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:9px" onclick="login()">
+      Se connecter
+    </button>
+  </div>
+</div>
+
+<div id="root" style="display:none">
+  <aside>
+    <div class="aside-logo">
+      <h1>Saint Michel</h1>
+      <p>Uniformes scolaires</p>
+    </div>
+    <nav>
+      <div class="nav-group">Tableau de bord</div>
+      <div class="nav-item on" data-p="dashboard" onclick="go('dashboard')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        <span>Accueil</span>
+      </div>
+      <div class="nav-group">Campagne</div>
+      <div class="nav-item" data-p="precommandes" onclick="go('precommandes')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h12M2 8h8M2 13h5"/></svg>
+        <span>Précommandes</span>
+      </div>
+      <div class="nav-item" data-p="fournisseur" onclick="go('fournisseur')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="5" width="14" height="9" rx="1"/><path d="M5 5V4a3 3 0 0 1 6 0v1"/></svg>
+        <span>Commande fournisseur</span>
+      </div>
+      <div class="nav-group">Rentrée</div>
+      <div class="nav-item" data-p="distribution" onclick="go('distribution')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+        <span>Distribution</span>
+      </div>
+      <div class="nav-item" data-p="stock" onclick="go('stock')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="9" width="14" height="6" rx="1"/><rect x="1" y="1" width="14" height="6" rx="1"/></svg>
+        <span>Stock</span>
+      </div>
+      <div class="nav-group">Paramètres</div>
+      <div class="nav-item" data-p="articles" onclick="go('articles')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+        <span>Articles & prix</span>
+      </div>
+      <div class="nav-item" data-p="campagnes" onclick="go('campagnes')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="12" rx="1"/><path d="M1 7h14M5 1v4M11 1v4"/></svg>
+        <span>Campagnes</span>
+      </div>
+    </nav>
+    <div class="aside-foot">
+      <button class="btn-logout" onclick="logout()">↩ Déconnexion</button>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <h2 id="hd-title">Tableau de bord</h2>
+      <div id="hd-badge" class="header-badge" style="display:none"></div>
+    </header>
+    <div id="page"></div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+let TOKEN = localStorage.getItem('sm_tok');
+let USER = localStorage.getItem('sm_user') || '';
+let PAGE = 'dashboard';
+const PAGES = {dashboard:'Tableau de bord',precommandes:'Précommandes',fournisseur:'Commande fournisseur',distribution:'Distribution',stock:'Stock',articles:'Articles & prix',campagnes:'Campagnes'};
+let ARTICLES_CACHE = [];
+
+// ── API — pointe vers les Netlify Functions ────────────
+async function api(path, method='GET', body=null) {
+  // /api/login → /api/login  (netlify.toml redirige vers /.netlify/functions/login)
+  const r = await fetch(path, {
+    method,
+    headers: {'Content-Type':'application/json', ...(TOKEN ? {'X-Token':TOKEN} : {})},
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (r.status === 204) return {};
+  // Export CSV : retourner la réponse brute
+  const ct = r.headers.get('content-type') || '';
+  if (ct.includes('text/csv')) {
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = ct.includes('precommandes') ? 'precommandes_export.csv' : 'commande_fournisseur.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    return {};
+  }
+  return r.json();
+}
+
+// ── AUTH ──────────────────────────────────────────────
+async function login() {
+  const u = document.getElementById('lu').value;
+  const p = document.getElementById('lp').value;
+  const res = await api('/api/login','POST',{username:u,password:p});
+  if (res.token) {
+    TOKEN = res.token; USER = res.nom || res.username;
+    localStorage.setItem('sm_tok', TOKEN);
+    localStorage.setItem('sm_user', USER);
+    showApp();
+  } else {
+    document.getElementById('login-err').innerHTML = `<div class="alert alert-info">${res.error||'Erreur'}</div>`;
+  }
+}
+
+async function logout() {
+  TOKEN = null; localStorage.removeItem('sm_tok'); localStorage.removeItem('sm_user');
+  document.getElementById('root').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+}
+
+function showApp() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('root').style.display = 'flex';
+  go('dashboard');
+}
+
+// ── ROUTER ────────────────────────────────────────────
+async function go(p) {
+  PAGE = p;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('on', el.dataset.p === p));
+  document.getElementById('hd-title').textContent = PAGES[p] || p;
+  ARTICLES_CACHE = (await api('/api/articles')) || [];
+  await ({dashboard:pgDashboard,precommandes:pgPrecommandes,fournisseur:pgFournisseur,
+    distribution:pgDistribution,stock:pgStock,articles:pgArticles,campagnes:pgCampagnes}[p] || pgDashboard)();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function pgDashboard() {
+  const [s, camp] = await Promise.all([api('/api/stats'), api('/api/campagnes/active')]);
+  const badge = document.getElementById('hd-badge');
+  if (camp.annee) { badge.textContent = `Campagne ${camp.annee}`; badge.style.display=''; }
+  else badge.style.display='none';
+  pg(`
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-l">Précommandes</div><div class="stat-v blue">${s.nb_precommandes}</div><div class="stat-s">cette campagne</div></div>
+    <div class="stat"><div class="stat-l">Familles</div><div class="stat-v">${s.nb_familles}</div><div class="stat-s">adresses email uniques</div></div>
+    <div class="stat"><div class="stat-l">Articles commandés</div><div class="stat-v">${s.nb_items}</div><div class="stat-s">toutes tailles confondues</div></div>
+    <div class="stat"><div class="stat-l">CA précommandé</div><div class="stat-v blue">${fmt(s.ca_total)}</div><div class="stat-s">${s.ca_encaisse>0?fmt(s.ca_encaisse)+' encaissé':''}</div></div>
+    <div class="stat"><div class="stat-l">Distributions</div><div class="stat-v green">${s.nb_distributions}</div><div class="stat-s">paiements validés</div></div>
+  </div>
+  <div class="form-row" style="gap:18px;align-items:start">
+    <div class="card">
+      <div class="card-head"><span class="card-title">Dernières précommandes</span><button class="btn btn-xs btn-secondary" onclick="go('precommandes')">Voir tout</button></div>
+      <table>
+        <thead><tr><th>Enfant</th><th>Niveau</th><th>Articles</th><th>Total</th></tr></thead>
+        <tbody>${s.recent&&s.recent.length ? s.recent.map(r=>`<tr>
+          <td><strong>${r.enfant_prenom} ${r.enfant_nom}</strong><br><span style="color:var(--text3);font-size:11px">${r.parent_prenom} ${r.parent_nom}</span></td>
+          <td><span class="badge badge-blue">${r.niveau}</span></td>
+          <td class="num">${r.nb_lignes}</td>
+          <td class="price">${fmt(r.total)}</td>
+        </tr>`).join('') : `<tr><td colspan=4 class="empty"><p>Aucune précommande</p></td></tr>`}</tbody>
+      </table>
+    </div>
+    <div>
+      ${s.stock_low&&s.stock_low.length ? `<div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">⚠ Alertes stock</span></div>
+        <table>
+          <thead><tr><th>Article</th><th>Taille</th><th>Qté</th></tr></thead>
+          <tbody>${s.stock_low.map(r=>`<tr>
+            <td>${r.nom}</td><td>${r.taille}</td>
+            <td><span class="badge ${r.quantite<=0?'badge-red':'badge-amber'}">${r.quantite}</span></td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>` : ''}
+      ${s.by_article&&s.by_article.length ? `<div class="card">
+        <div class="card-head"><span class="card-title">Top articles</span></div>
+        <div class="card-body">
+          ${s.by_article.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12.5px">${r.nom}</span>
+            <span class="num" style="color:var(--blue)">${r.qte} pcs</span>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+  </div>`);
+}
+
+// ── PRÉCOMMANDES ──────────────────────────────────────
+async function pgPrecommandes() {
+  const data = await api('/api/precommandes');
+  const camp = await api('/api/campagnes/active');
+  pg(`
+  <div class="gap-row" style="margin-bottom:16px;justify-content:space-between">
+    <div class="gap-row">
+      <span class="badge badge-blue" style="font-size:12px;padding:4px 10px">${data.length} précommande(s)</span>
+      <div class="search-wrap"><input class="form-control" id="search-p" placeholder="Rechercher…" style="width:220px" oninput="filterPrecommandes(this.value,window._precomData)"></div>
+    </div>
+    <div class="gap-row">
+      <button class="btn btn-secondary btn-sm" onclick="exportCSV('/api/precommandes/export','precommandes_export.csv')">↓ Export CSV</button>
+      ${camp.id ? `<button class="btn btn-primary btn-sm" onclick="openPrecomForm()">+ Nouvelle précommande</button>` : `<span class="badge badge-amber">Aucune campagne ouverte</span>`}
+    </div>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Enfant</th><th>Niveau</th><th>Parent</th><th>Email</th><th>Articles</th><th>Total</th><th>Statut</th><th>Date</th><th></th></tr></thead>
+      <tbody id="precom-rows">${renderPrecomRows(data)}</tbody>
+    </table>
+  </div>`);
+  window._precomData = data;
+}
+
+function renderPrecomRows(data) {
+  if (!data.length) return `<tr><td colspan=9 class="empty"><p>Aucune précommande</p></td></tr>`;
+  return data.map(p=>`<tr>
+    <td><strong>${p.enfant_prenom} ${p.enfant_nom}</strong></td>
+    <td><span class="badge badge-blue">${p.niveau}</span></td>
+    <td>${p.parent_prenom} ${p.parent_nom}</td>
+    <td style="color:var(--text2);font-size:12px">${p.parent_email}</td>
+    <td class="num">${p.nb_lignes}</td>
+    <td class="price">${fmt(p.total)}</td>
+    <td><span class="badge ${p.distribue?'badge-green':'badge-gray'}">${p.distribue?'Distribué':'En attente'}</span></td>
+    <td style="color:var(--text3);font-size:12px">${(p.created_at||'').slice(0,10)}</td>
+    <td><div class="gap-row">
+      <button class="btn btn-xs btn-secondary" onclick="viewPrecom('${p.id}')">Détail</button>
+      ${!p.distribue?`<button class="btn btn-xs btn-danger" onclick="delPrecom('${p.id}')">✕</button>`:''}
+    </div></td>
+  </tr>`).join('');
+}
+
+function filterPrecommandes(q, data) {
+  if (!data) return;
+  const ql = q.toLowerCase();
+  const filtered = q ? data.filter(p => (p.enfant_nom+p.enfant_prenom+p.parent_nom+p.parent_email).toLowerCase().includes(ql)) : data;
+  document.getElementById('precom-rows').innerHTML = renderPrecomRows(filtered);
+}
+
+async function openPrecomForm() {
+  const arts = ARTICLES_CACHE.filter(a=>a.actif);
+  const allTailles = [...new Set(arts.flatMap(a=>a.tailles||[]))];
+  modal(`
+    <div class="modal-title">Nouvelle précommande</div>
+    <div class="section-sep">Informations parent</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom *</label><input class="form-control" id="pn" placeholder="Dupont"></div>
+      <div class="form-group"><label class="form-label">Prénom *</label><input class="form-control" id="pp" placeholder="Marie"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Email *</label><input class="form-control" id="pe" type="email" placeholder="marie.dupont@email.fr"></div>
+      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-control" id="pt" placeholder="06 xx xx xx xx"></div>
+    </div>
+    <div class="section-sep">Informations enfant</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom *</label><input class="form-control" id="en"></div>
+      <div class="form-group"><label class="form-label">Prénom *</label><input class="form-control" id="ep"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Niveau *</label>
+        <select class="form-control" id="niv">
+          ${['TPS','PS','MS','GS','CP','CE1','CE2','CM1','CM2'].map(n=>`<option>${n}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Note interne</label><input class="form-control" id="pnote" placeholder="Optionnel"></div>
+    </div>
+    <div class="section-sep">Articles commandés <small style="font-weight:400;text-transform:none;font-size:11px;color:var(--text3)">(laisser 0 si non désiré)</small></div>
+    <div style="overflow-x:auto">
+      <table class="qty-table">
+        <thead><tr><th>Article</th>${allTailles.map(t=>`<th>${t}</th>`).join('')}</tr></thead>
+        <tbody>${arts.map(a=>{
+          const tailles = a.tailles||[];
+          return `<tr><td>${a.nom}<br><small style="color:var(--text3);font-weight:400">${a.prix.toFixed(2)} €</small></td>
+            ${allTailles.map(t=>tailles.includes(t)?`<td><input class="qty-input" type="number" min="0" value="0" data-aid="${a.id}" data-taille="${t}" data-prix="${a.prix}" oninput="calcTotal()"></td>`:`<td style="background:var(--surface2)">—</td>`).join('')}
+          </tr>`;}).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="total-bar"><span>Total de la commande</span><strong id="total-val">0,00 €</strong></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="submitPrecom()">Enregistrer</button>
+    </div>`);
+}
+
+function calcTotal() {
+  let t=0;
+  document.querySelectorAll('.qty-input').forEach(i=>{ t+=(parseInt(i.value)||0)*parseFloat(i.dataset.prix); });
+  const el=document.getElementById('total-val');
+  if(el) el.textContent=fmt(t);
+}
+
+async function submitPrecom() {
+  const lignes=[];
+  document.querySelectorAll('.qty-input').forEach(i=>{ const q=parseInt(i.value)||0; if(q>0) lignes.push({article_id:i.dataset.aid,taille:i.dataset.taille,quantite:q,prix_unitaire:+i.dataset.prix}); });
+  if(!lignes.length){alert('Saisir au moins un article');return;}
+  const b={parent_nom:v('pn'),parent_prenom:v('pp'),parent_email:v('pe'),parent_tel:v('pt'),enfant_nom:v('en'),enfant_prenom:v('ep'),niveau:v('niv'),note:v('pnote'),lignes};
+  if(!b.parent_nom||!b.parent_email||!b.enfant_nom){alert('Champs obligatoires manquants');return;}
+  const r=await api('/api/precommandes','POST',b);
+  if(r.id){closeModal();go('precommandes');}else alert(r.error||'Erreur');
+}
+
+async function viewPrecom(id) {
+  const p = await api('/api/precommandes/'+id);
+  const total = (p.lignes||[]).reduce((s,l)=>s+l.quantite*l.prix_unitaire,0);
+  modal(`
+    <div class="modal-title">${p.enfant_prenom} ${p.enfant_nom} — Précommande</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+      <div style="font-size:12.5px;line-height:1.8">
+        <div><strong>Parent :</strong> ${p.parent_prenom} ${p.parent_nom}</div>
+        <div><strong>Email :</strong> <a href="mailto:${p.parent_email}" style="color:var(--blue)">${p.parent_email}</a></div>
+        ${p.parent_tel?`<div><strong>Tél :</strong> ${p.parent_tel}</div>`:''}
+        <div><strong>Niveau :</strong> <span class="badge badge-blue">${p.niveau}</span></div>
+        <div><strong>Date :</strong> ${(p.created_at||'').slice(0,10)}</div>
+        ${p.note?`<div><strong>Note :</strong> ${p.note}</div>`:''}
+      </div>
+      <div style="font-size:12.5px;line-height:1.8">
+        <div><strong>Statut :</strong> <span class="badge ${p.distribution?'badge-green':'badge-gray'}">${p.distribution?'Distribué':'En attente'}</span></div>
+        ${p.distribution?`<div><strong>Mode paiement :</strong> ${p.distribution.mode_paiement}</div><div><strong>Date distribution :</strong> ${(p.distribution.validated_at||'').slice(0,10)}</div>`:''}
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Article</th><th>Taille</th><th>Qté</th><th>P.U.</th><th>Sous-total</th></tr></thead>
+      <tbody>${(p.lignes||[]).map(l=>`<tr><td>${l.article_nom}</td><td>${l.taille}</td><td class="num">${l.quantite}</td><td class="num">${l.prix_unitaire.toFixed(2)} €</td><td class="price">${fmt(l.quantite*l.prix_unitaire)}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="total-bar" style="margin-top:12px"><span>Total</span><strong>${fmt(total)}</strong></div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>`);
+}
+
+async function delPrecom(id) {
+  if(!confirm('Supprimer cette précommande ?')) return;
+  await api('/api/precommandes/'+id,'DELETE');
+  go('precommandes');
+}
+
+// ── FOURNISSEUR ───────────────────────────────────────
+async function pgFournisseur() {
+  const [data, camp] = await Promise.all([api('/api/commande-fournisseur'), api('/api/campagnes/active')]);
+  const surplus = camp.surplus_pct||10;
+  window._fourniData = data;
+  pg(`
+  <div class="alert alert-info">Synthèse des précommandes. Ajustez le surplus puis exportez pour commander au fournisseur.</div>
+  <div class="gap-row" style="margin-bottom:16px;justify-content:space-between">
+    <div class="gap-row">
+      <label style="font-size:12.5px;font-weight:500">Surplus stock :</label>
+      <input type="number" id="surp" value="${surplus}" min="0" max="100" class="form-control" style="width:80px" oninput="updateFourni(window._fourniData)">
+      <span style="font-size:12.5px;color:var(--text2)">%</span>
+    </div>
+    <div class="gap-row">
+      <button class="btn btn-secondary btn-sm" onclick="exportCSV('/api/commande-fournisseur/export','commande_fournisseur.csv')">↓ Export CSV</button>
+      <button class="btn btn-success btn-sm" onclick="initStock()">✓ Réceptionner en stock</button>
+    </div>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Article</th><th>Taille</th><th>Précommandé</th><th>Surplus</th><th>À commander</th><th>P.U.</th><th>Montant estimé</th></tr></thead>
+      <tbody id="four-rows">${renderFourniRows(data, surplus)}</tbody>
+    </table>
+  </div>`);
+}
+
+function renderFourniRows(data, surplus) {
+  if (!data.length) return `<tr><td colspan=7 class="empty"><p>Aucune précommande enregistrée</p></td></tr>`;
+  return data.map(r=>{
+    const surp=Math.ceil(r.qte_precommandee*surplus/100);
+    const cmd=r.qte_precommandee+surp;
+    return `<tr>
+      <td>${r.nom}</td><td>${r.taille}</td>
+      <td class="num">${r.qte_precommandee}</td>
+      <td class="num" style="color:var(--amber)">+${surp}</td>
+      <td><strong class="num">${cmd}</strong></td>
+      <td class="num">${r.prix.toFixed(2)} €</td>
+      <td class="price">${fmt(cmd*r.prix)}</td>
+    </tr>`;}).join('');
+}
+
+function updateFourni(data) {
+  const s=parseInt(document.getElementById('surp').value)||0;
+  document.getElementById('four-rows').innerHTML=renderFourniRows(data,s);
+}
+
+async function initStock() {
+  if(!window._fourniData?.length){alert('Aucune donnée');return;}
+  const surplus=parseInt(document.getElementById('surp').value)||0;
+  const items=window._fourniData.map(r=>({article_id:r.article_id,taille:r.taille,quantite:r.qte_precommandee+Math.ceil(r.qte_precommandee*surplus/100)}));
+  if(!confirm(`Réceptionner ${items.reduce((s,i)=>s+i.quantite,0)} articles en stock ?`))return;
+  const res=await api('/api/stock/init','POST',{items});
+  if(res.ok){alert('Stock initialisé avec succès !');go('stock');}
+}
+
+// ── DISTRIBUTION ──────────────────────────────────────
+async function pgDistribution() {
+  const data = await api('/api/precommandes?non_distribues=1');
+  pg(`
+  <div class="two-col">
+    <div>
+      <div class="gap-row" style="margin-bottom:12px;justify-content:space-between">
+        <span style="font-weight:600;font-size:13.5px">Précommandes à distribuer <span class="badge badge-blue" style="margin-left:6px">${data.length}</span></span>
+        <div class="search-wrap"><input class="form-control" id="search-d" placeholder="Rechercher…" style="width:200px" oninput="filterDist(this.value)"></div>
+      </div>
+      <div id="dist-list">
+        ${data.length ? data.map(p=>`
+          <div class="dist-row" id="dr-${p.id}" onclick="toggleDist('${p.id}')" data-total="${p.total}" data-name="${p.enfant_prenom} ${p.enfant_nom}" data-meta="${p.parent_prenom} ${p.parent_nom}">
+            <input type="checkbox" id="dc-${p.id}" onclick="event.stopPropagation()" onchange="updateDistTotal()">
+            <div class="dist-info">
+              <div class="dist-name">${p.enfant_prenom} ${p.enfant_nom} <span class="badge badge-blue" style="margin-left:4px">${p.niveau}</span></div>
+              <div class="dist-meta">${p.parent_prenom} ${p.parent_nom} · ${p.nb_lignes} article(s) · <span style="color:var(--text3);font-size:11px">${p.parent_email}</span></div>
+            </div>
+            <div class="dist-total">${fmt(p.total)}</div>
+          </div>`).join('') : `<div class="empty"><p>🎉 Toutes les précommandes ont été distribuées !</p></div>`}
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Validation paiement</span></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Mode de paiement</label>
+            <select class="form-control" id="mode-pay">
+              <option value="cheque">Chèque</option>
+              <option value="cb">Carte bleue</option>
+              <option value="especes">Espèces</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Note</label>
+            <input class="form-control" id="dist-note" placeholder="ex : paiement en 2 fois">
+          </div>
+          <div class="total-bar" style="margin-bottom:14px">
+            <span>Total sélectionné</span>
+            <strong id="dist-total">0,00 €</strong>
+          </div>
+          <button class="btn btn-success" style="width:100%;justify-content:center" onclick="validerDist()">✓ Valider la distribution</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Historique</span></div>
+        <div class="card-body">
+          <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="voirHistoDist()">Voir les distributions validées</button>
+        </div>
+      </div>
+    </div>
+  </div>`);
+}
+
+function toggleDist(id) {
+  const chk=document.getElementById('dc-'+id);
+  chk.checked=!chk.checked;
+  document.getElementById('dr-'+id).classList.toggle('sel',chk.checked);
+  updateDistTotal();
+}
+
+function updateDistTotal() {
+  let t=0;
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const id=r.id.replace('dr-','');
+    if(document.getElementById('dc-'+id)?.checked) t+=parseFloat(r.dataset.total||0);
+  });
+  document.getElementById('dist-total').textContent=fmt(t);
+}
+
+function filterDist(q) {
+  const ql=q.toLowerCase();
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const match=(r.dataset.name+r.dataset.meta).toLowerCase().includes(ql);
+    r.style.display=match?'':'none';
+  });
+}
+
+async function validerDist() {
+  const ids=[];
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const id=r.id.replace('dr-','');
+    if(document.getElementById('dc-'+id)?.checked) ids.push(id);
+  });
+  if(!ids.length){alert('Sélectionnez au moins une précommande');return;}
+  const res=await api('/api/distributions','POST',{precommande_ids:ids,mode_paiement:v('mode-pay'),note:v('dist-note')});
+  if(res.ok) go('distribution');
+  else alert(res.error||'Erreur');
+}
+
+async function voirHistoDist() {
+  const data=await api('/api/distributions');
+  const total=data.reduce((s,d)=>s+(d.montant_total||0),0);
+  modal(`
+    <div class="modal-title">Historique des distributions</div>
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat"><div class="stat-l">Total distribué</div><div class="stat-v green">${data.length}</div></div>
+      <div class="stat"><div class="stat-l">Montant encaissé</div><div class="stat-v blue">${fmt(total)}</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Enfant</th><th>Niveau</th><th>Parent</th><th>Montant</th><th>Paiement</th><th>Date</th><th></th></tr></thead>
+      <tbody>${data.map(d=>`<tr>
+        <td><strong>${d.enfant_prenom} ${d.enfant_nom}</strong></td>
+        <td><span class="badge badge-blue">${d.niveau}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${d.parent_prenom} ${d.parent_nom}</td>
+        <td class="price">${fmt(d.montant_total)}</td>
+        <td><span class="badge badge-gray">${d.mode_paiement}</span></td>
+        <td style="font-size:12px;color:var(--text3)">${(d.validated_at||'').slice(0,10)}</td>
+        <td><button class="btn btn-xs btn-danger" onclick="annulerDist('${d.id}')">✕</button></td>
+      </tr>`).join('')||`<tr><td colspan=7 class="empty"><p>Aucune distribution</p></td></tr>`}</tbody>
+    </table>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>`);
+}
+
+async function annulerDist(id) {
+  if(!confirm('Annuler cette distribution ? Le stock sera recrédité.')) return;
+  await api('/api/distributions/'+id,'DELETE');
+  closeModal(); go('distribution');
+}
+
+// ── STOCK ─────────────────────────────────────────────
+async function pgStock() {
+  const [stock, arts] = await Promise.all([api('/api/stock'), api('/api/articles')]);
+  pg(`
+  <div class="gap-row" style="margin-bottom:16px;justify-content:flex-end">
+    <button class="btn btn-secondary btn-sm" onclick="voirMvts()">Historique mouvements</button>
+    <button class="btn btn-secondary btn-sm" onclick="openMvt('entree')">+ Entrée</button>
+    <button class="btn btn-danger btn-sm" onclick="openMvt('sortie')">− Sortie</button>
+  </div>
+  ${arts.map(a=>{
+    const lignes=stock.filter(s=>s.article_id===a.id);
+    const tailles=a.tailles||[];
+    return `<div class="card" style="margin-bottom:16px">
+      <div class="card-head">
+        <span class="card-title">${a.nom}</span>
+        <span style="font-size:12px;color:var(--text2)">${a.prix.toFixed(2)} € / pièce · ${a.description||''}</span>
+      </div>
+      <table>
+        <thead><tr>${tailles.map(t=>`<th style="text-align:center">${t}</th>`).join('')}</tr></thead>
+        <tbody><tr>${tailles.map(t=>{
+          const s=lignes.find(l=>l.taille===t);
+          const q=s?s.quantite:0;
+          return `<td style="text-align:center"><span class="badge ${q<=0?'badge-red':q<5?'badge-amber':'badge-green'}" style="font-size:12px;padding:3px 10px">${q}</span></td>`;
+        }).join('')}</tr></tbody>
+      </table>
+    </div>`;
+  }).join('')}`);
+}
+
+async function openMvt(type) {
+  const arts=ARTICLES_CACHE;
+  if(!arts.length){alert('Aucun article');return;}
+  modal(`
+    <div class="modal-title">${type==='entree'?'Entrée':'Sortie'} de stock</div>
+    <div class="form-group"><label class="form-label">Article</label>
+      <select class="form-control" id="mv-art" onchange="updateTaillesMvt(this)">
+        ${arts.map(a=>`<option value="${a.id}" data-tailles='${JSON.stringify(a.tailles||[])}'>${a.nom}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Taille</label>
+        <select class="form-control" id="mv-tail">${(arts[0].tailles||[]).map(t=>`<option>${t}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label class="form-label">Quantité</label><input class="form-control" id="mv-qty" type="number" min="1" value="1"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-control" id="mv-note" placeholder="Ex: retour taille, livraison complémentaire…"></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn ${type==='entree'?'btn-primary':'btn-danger'}" onclick="submitMvt('${type}')">Confirmer</button>
+    </div>`);
+}
+
+function updateTaillesMvt(sel) {
+  const tailles=JSON.parse(sel.selectedOptions[0].dataset.tailles||'[]');
+  document.getElementById('mv-tail').innerHTML=tailles.map(t=>`<option>${t}</option>`).join('');
+}
+
+async function submitMvt(type) {
+  const res=await api('/api/stock/mouvement','POST',{
+    article_id:document.getElementById('mv-art').value,
+    taille:document.getElementById('mv-tail').value,
+    quantite:parseInt(document.getElementById('mv-qty').value)||1,
+    type, note:document.getElementById('mv-note').value
+  });
+  if(res.ok){closeModal();go('stock');}else alert(res.error||'Erreur');
+}
+
+async function voirMvts() {
+  const data=await api('/api/stock/mouvements');
+  modal(`
+    <div class="modal-title">Historique des mouvements de stock</div>
+    <table>
+      <thead><tr><th>Date</th><th>Article</th><th>Taille</th><th>Type</th><th>Qté</th><th>Note</th></tr></thead>
+      <tbody>${data.map(m=>`<tr>
+        <td style="font-size:12px;color:var(--text3)">${(m.date||'').slice(0,10)}</td>
+        <td>${m.article_nom}</td><td>${m.taille}</td>
+        <td><span class="badge ${m.type==='entree'?'badge-green':'badge-red'}">${m.type}</span></td>
+        <td class="num">${m.quantite}</td>
+        <td style="font-size:12px;color:var(--text2)">${m.note||'—'}</td>
+      </tr>`).join('')||`<tr><td colspan=6 class="empty">Aucun mouvement</td></tr>`}</tbody>
+    </table>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>`);
+}
+
+// ── ARTICLES ──────────────────────────────────────────
+async function pgArticles() {
+  const data=await api('/api/articles');
+  pg(`
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <button class="btn btn-primary btn-sm" onclick="openArticleForm()">+ Ajouter un article</button>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Nom</th><th>Description</th><th>Prix</th><th>Tailles</th><th>Statut</th><th></th></tr></thead>
+      <tbody>${data.map(a=>`<tr>
+        <td><strong>${a.nom}</strong></td>
+        <td style="color:var(--text2);font-size:12px">${a.description||'—'}</td>
+        <td class="price">${a.prix.toFixed(2)} €</td>
+        <td style="font-size:11px;color:var(--text2)">${(a.tailles||[]).join(' · ')}</td>
+        <td><span class="badge ${a.actif?'badge-green':'badge-gray'}">${a.actif?'Actif':'Inactif'}</span></td>
+        <td><button class="btn btn-xs btn-secondary" onclick="openArticleForm('${a.id}')">Modifier</button></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`);
+}
+
+async function openArticleForm(id=null) {
+  let a=id?(await api('/api/articles/'+id)):{nom:'',description:'',tailles:['2 ans','4 ans','6 ans','8 ans','10 ans','12 ans','S','M','L','XL'],prix:'',actif:true};
+  modal(`
+    <div class="modal-title">${id?'Modifier':'Nouvel'} article</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom *</label><input class="form-control" id="an" value="${a.nom}"></div>
+      <div class="form-group"><label class="form-label">Prix unitaire (€) *</label><input class="form-control" id="ap" type="number" step="0.01" value="${a.prix}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><input class="form-control" id="ad" value="${a.description||''}"></div>
+    <div class="form-group"><label class="form-label">Tailles disponibles (séparées par des virgules)</label><input class="form-control" id="at" value="${(a.tailles||[]).join(', ')}"></div>
+    <div class="form-group"><label class="form-label">Statut</label>
+      <select class="form-control" id="aa"><option value="1" ${a.actif?'selected':''}>Actif</option><option value="0" ${!a.actif?'selected':''}>Inactif</option></select>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="submitArticle('${id||''}')">Enregistrer</button>
+    </div>`);
+}
+
+async function submitArticle(id) {
+  const b={nom:v('an'),description:v('ad'),tailles_str:v('at'),prix:v('ap'),actif:+v('aa')};
+  if(!b.nom||!b.prix){alert('Nom et prix requis');return;}
+  const r=id?await api('/api/articles/'+id,'PUT',b):await api('/api/articles','POST',b);
+  if(r.ok||r.id){closeModal();go('articles');}else alert('Erreur');
+}
+
+// ── CAMPAGNES ─────────────────────────────────────────
+async function pgCampagnes() {
+  const data=await api('/api/campagnes');
+  pg(`
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <button class="btn btn-primary btn-sm" onclick="openCampForm()">+ Nouvelle campagne</button>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Année</th><th>Statut</th><th>Surplus %</th><th>Précommandes</th><th>CA total</th><th>Ouverture</th><th>Fermeture</th><th></th></tr></thead>
+      <tbody>${data.map(c=>`<tr>
+        <td><strong>${c.annee}</strong></td>
+        <td><span class="badge ${c.statut==='ouverte'?'badge-green':'badge-gray'}">${c.statut}</span></td>
+        <td class="num">${c.surplus_pct}%</td>
+        <td class="num">${c.nb_precommandes}</td>
+        <td class="price">${fmt(c.ca_total)}</td>
+        <td style="color:var(--text3);font-size:12px">${c.date_ouverture||'—'}</td>
+        <td style="color:var(--text3);font-size:12px">${c.date_fermeture||'—'}</td>
+        <td><div class="gap-row">
+          ${c.statut==='ouverte'?`<button class="btn btn-xs btn-danger" onclick="setCampStatut('${c.id}','fermee')">Fermer</button>`:''}
+          ${c.statut==='fermee'?`<button class="btn btn-xs btn-secondary" onclick="setCampStatut('${c.id}','ouverte')">Réouvrir</button>`:''}
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`);
+}
+
+async function openCampForm() {
+  modal(`
+    <div class="modal-title">Nouvelle campagne</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Année</label><input class="form-control" id="cy" type="number" value="${new Date().getFullYear()+1}"></div>
+      <div class="form-group"><label class="form-label">Surplus % recommandé</label><input class="form-control" id="cs" type="number" value="10" min="0" max="100"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="submitCamp()">Créer</button>
+    </div>`);
+}
+
+async function submitCamp() {
+  const r=await api('/api/campagnes','POST',{annee:+v('cy'),surplus_pct:+v('cs')});
+  if(r.id){closeModal();go('campagnes');}else alert(r.error||'Erreur');
+}
+
+async function setCampStatut(id,s) {
+  if(s==='fermee'&&!confirm('Fermer cette campagne ?'))return;
+  await api('/api/campagnes/'+id,'PUT',{statut:s});
+  go('campagnes');
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function pg(html){ document.getElementById('page').innerHTML=html; }
+function modal(html){ document.getElementById('modal').innerHTML=html; document.getElementById('overlay').classList.add('open'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+function v(id){ return (document.getElementById(id)||{}).value||''; }
+function fmt(n){ return parseFloat(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}); }
+
+async function exportCSV(path, filename) {
+  const r = await fetch(path, { headers: TOKEN ? {'X-Token':TOKEN} : {} });
+  const blob = await r.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Init
+window.onload=()=>{ if(TOKEN){ showApp(); } else { document.getElementById('login').style.display='flex'; } };
+</script>
+</body>
+</html>
