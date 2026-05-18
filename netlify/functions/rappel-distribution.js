@@ -109,7 +109,7 @@ async function sendRappel(transport, precommande, lignes, campagne, joursRestant
 }
 
 // ── Handler principal ─────────────────────────────────────────────────────
-const handler = async () => {
+const rappelHandler = async () => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
     console.warn("SMTP non configuré, rappels non envoyés.");
     return { statusCode: 200, body: "SMTP non configuré" };
@@ -200,5 +200,7 @@ const handler = async () => {
 };
 
 // Cron : tous les matins à 6h UTC (8h Paris été)
-export { handler };
-export const config = { schedule: "0 6 * * *" };
+import { schedule } from "@netlify/functions";
+export const handler = schedule("0 6 * * *", async (event) => {
+  return await rappelHandler(event);
+});
