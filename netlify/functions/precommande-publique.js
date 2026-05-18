@@ -4,7 +4,6 @@ import { sendConfirmationEmail } from "./_lib/mailer.js";
 async function getCampagneActive(db) {
   const snap = await db.collection("campagnes")
     .where("statut", "==", "ouverte")
-    .orderBy("annee", "desc")
     .limit(1)
     .get();
   return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
@@ -16,22 +15,15 @@ export async function handler(event) {
   const db = getDb();
 
   if (event.httpMethod === "GET") {
-    const campagne = await getCampagneActive(db);
-    if (!campagne) return err("Aucune campagne ouverte actuellement", 404);
-
     const snap = await db.collection("articles")
       .where("actif", "==", true)
-      .orderBy("ordre")
       .get();
     const articles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    return ok({ campagne, articles });
+    const campagne = await getCampagneActive(db);
+    return ok({ campagne: campagne || null, articles });
   }
 
   if (event.httpMethod === "POST") {
-    const campagne = await getCampagneActive(db);
-    if (!campagne) return err("Aucune campagne ouverte actuellement", 400);
-
     const d = JSON.parse(event.body || "{}");
 
     const required = ["parent_nom", "parent_prenom", "parent_email", "enfant_nom", "enfant_prenom", "niveau"];
@@ -41,13 +33,15 @@ export async function handler(event) {
     if (!d.lignes?.length) return err("Aucun article sélectionné", 400);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.parent_email)) return err("Adresse email invalide", 400);
 
+    const campagne = await getCampagneActive(db);
+
     const lignesValidees = [];
     for (const l of d.lignes) {
       if (!l.article_id || !l.taille || !l.quantite) continue;
       const aDoc = await db.collection("articles").doc(l.article_id).get();
       if (!aDoc.exists || !aDoc.data().actif) return err(`Article introuvable : ${l.article_id}`, 400);
       const article = aDoc.data();
-      if (!article.tailles.includes(l.taille)) return err(`Taille invalide pour ${article.nom}`, 400);
+      if (!article.tailles?.includes(l.taille)) return err(`Taille invalide pour ${article.nom}`, 400);
       lignesValidees.push({
         article_id: l.article_id,
         article_nom: article.nom,
@@ -59,7 +53,7 @@ export async function handler(event) {
     if (!lignesValidees.length) return err("Aucun article valide dans la commande", 400);
 
     const ref = await db.collection("precommandes").add({
-      campagne_id: campagne.id,
+      campagne_id: campagne?.id || null,
       parent_nom: d.parent_nom.trim(),
       parent_prenom: d.parent_prenom.trim(),
       parent_email: d.parent_email.trim().toLowerCase(),

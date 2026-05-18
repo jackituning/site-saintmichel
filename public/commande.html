@@ -639,20 +639,26 @@ async function init() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erreur');
 
-    document.getElementById('campagne-annee').textContent = data.campagne.annee || '';
-    articlesData = data.articles;
+    // Campagne optionnelle
+    if (data.campagne?.annee) {
+      document.getElementById('campagne-annee').textContent = data.campagne.annee;
+    } else {
+      document.getElementById('campagne-annee').textContent = new Date().getFullYear();
+      // Masque la bannière campagne si pas de campagne ouverte
+      const banner = document.querySelector('.campagne-info');
+      if (banner) banner.style.display = 'none';
+    }
 
+    articlesData = data.articles;
     document.getElementById('state-loading').style.display = 'none';
     document.getElementById('form-content').style.display = 'block';
-
     renderArticles();
   } catch (e) {
+    // En cas d'erreur réseau, on affiche quand même le formulaire vide
+    console.error('Init error:', e.message);
     document.getElementById('state-loading').style.display = 'none';
-    const errEl = document.getElementById('state-error');
-    errEl.style.display = 'block';
-    if (e.message && e.message !== 'Erreur') {
-      document.getElementById('state-error-msg').textContent = e.message;
-    }
+    document.getElementById('form-content').style.display = 'block';
+    renderArticles();
   }
 }
 
