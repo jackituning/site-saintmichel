@@ -1,6 +1,4 @@
-// netlify/functions/precommande-publique.js
-// Route publique — pas d'authentification requise
-import { getDb, ok, err, options } from "./_lib/firebase.js";
+import { getDb, ok, err, CORS } from "./_lib/firebase.js";
 import { sendConfirmationEmail } from "./_lib/mailer.js";
 
 async function getCampagneActive(db) {
@@ -13,11 +11,10 @@ async function getCampagneActive(db) {
 }
 
 export async function handler(event) {
-  if (event.httpMethod === "OPTIONS") return options();
+  if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: CORS };
 
   const db = getDb();
 
-  // GET /precommande-publique — récupère les articles actifs + campagne active
   if (event.httpMethod === "GET") {
     const campagne = await getCampagneActive(db);
     if (!campagne) return err("Aucune campagne ouverte actuellement", 404);
@@ -31,26 +28,19 @@ export async function handler(event) {
     return ok({ campagne, articles });
   }
 
-  // POST /precommande-publique — soumet une précommande
   if (event.httpMethod === "POST") {
     const campagne = await getCampagneActive(db);
     if (!campagne) return err("Aucune campagne ouverte actuellement", 400);
 
     const d = JSON.parse(event.body || "{}");
 
-    // Validation des champs obligatoires
     const required = ["parent_nom", "parent_prenom", "parent_email", "enfant_nom", "enfant_prenom", "niveau"];
     for (const f of required) {
       if (!d[f]?.trim()) return err(`Champ manquant : ${f}`, 400);
     }
     if (!d.lignes?.length) return err("Aucun article sélectionné", 400);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.parent_email)) return err("Adresse email invalide", 400);
 
-    // Validation email basique
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.parent_email)) {
-      return err("Adresse email invalide", 400);
-    }
-
-    // Récupération des prix réels depuis Firestore (sécurité)
     const lignesValidees = [];
     for (const l of d.lignes) {
       if (!l.article_id || !l.taille || !l.quantite) continue;
@@ -68,7 +58,6 @@ export async function handler(event) {
     }
     if (!lignesValidees.length) return err("Aucun article valide dans la commande", 400);
 
-    // Création de la précommande
     const ref = await db.collection("precommandes").add({
       campagne_id: campagne.id,
       parent_nom: d.parent_nom.trim(),
@@ -82,7 +71,6 @@ export async function handler(event) {
       created_at: new Date().toISOString(),
     });
 
-    // Création des lignes
     for (const l of lignesValidees) {
       await db.collection("lignes_precommande").add({
         precommande_id: ref.id,
@@ -93,7 +81,6 @@ export async function handler(event) {
       });
     }
 
-    // Email de confirmation
     try {
       await sendConfirmationEmail(d, lignesValidees);
     } catch (e) {
