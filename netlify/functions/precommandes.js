@@ -21,7 +21,8 @@ export async function handler(event) {
   // GET /precommandes/export
   if (event.httpMethod === "GET" && id === "export") {
     const campagne = await getCampagneActive(db);
-    const pSnap = campagne
+    const all = event.queryStringParameters?.all;
+    const pSnap = (campagne && !all)
       ? await db.collection("precommandes").where("campagne_id", "==", campagne.id).orderBy("created_at", "desc").get()
       : await db.collection("precommandes").orderBy("created_at", "desc").get();
     const rows = [["Nom parent","Prénom parent","Email","Téléphone","Nom enfant","Prénom enfant","Niveau","Article","Taille","Qté","Prix unitaire","Sous-total","Date","Distribué","Mode paiement"]];

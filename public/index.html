@@ -535,7 +535,7 @@ async function initStock() {
 
 // ── DISTRIBUTION ──────────────────────────────────────
 async function pgDistribution() {
-  const data = await api('/api/precommandes?non_distribues=1');
+  const data = await api('/api/precommandes?non_distribues=1&all=1');
   pg(`
   <div class="two-col">
     <div>
