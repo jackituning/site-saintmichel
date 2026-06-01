@@ -556,13 +556,13 @@ async function pgDistribution() {
       </div>
     </div>
     <div class="right-panel">
-      <div class="card" id="dist-detail-card" style="display:none">
-        <div class="card-head" style="justify-content:space-between;align-items:center">
-          <span class="card-title" id="dist-detail-title">Détail</span>
-          <button onclick="clearDistDetail()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1">×</button>
-        </div>
-        <div class="card-body" id="dist-detail-body"></div>
+    <div class="card" id="dist-detail-card" style="display:none">
+      <div class="card-head" style="justify-content:space-between;align-items:center">
+        <span class="card-title" id="dist-detail-title">Détail</span>
+        <button onclick="clearDistDetail()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1">×</button>
       </div>
+      <div class="card-body" id="dist-detail-body"></div>
+    </div>
       <div class="card">
         <div class="card-head"><span class="card-title">Validation paiement</span></div>
         <div class="card-body">
@@ -592,7 +592,7 @@ async function pgDistribution() {
         </div>
       </div>
     </div>
-  </div>\`);
+  </div>`);
 }
 
 async function selectDist(id) {
@@ -600,69 +600,108 @@ async function selectDist(id) {
   chk.checked = !chk.checked;
   document.getElementById('dr-'+id).classList.toggle('sel', chk.checked);
   updateDistTotal();
-
   const card = document.getElementById('dist-detail-card');
   const body = document.getElementById('dist-detail-body');
   const title = document.getElementById('dist-detail-title');
-
-  if (!chk.checked) {
-    if (card.dataset.pid === id) clearDistDetail();
-    return;
-  }
-
+  if (!chk.checked) { if (card.dataset.pid===id) clearDistDetail(); return; }
   card.dataset.pid = id;
   card.style.display = 'block';
-  body.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:4px 0">Chargement…</p>';
-
+  body.innerHTML = '<p style="color:var(--text3);font-size:13px">Chargement…</p>';
   const p = await api('/api/precommandes/'+id);
   title.textContent = p.enfant_prenom+' '+p.enfant_nom;
-
-  const lignesHtml = (p.lignes||[]).map(l=>`
-    <tr>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px">${l.article_nom}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center;font-size:13px">${l.taille}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center;font-size:13px">${l.quantite}</td>
-      <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;font-weight:600;font-size:13px">${fmt(l.quantite*l.prix_unitaire)}</td>
-    </tr>`).join('');
-
-  body.innerHTML = \`
-    <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:4px">Parent</div>
-      <div style="font-weight:500;font-size:13px">\${p.parent_prenom} \${p.parent_nom}</div>
-      <div style="font-size:12px;color:var(--text3)">\${p.parent_email}\${p.parent_tel?' · '+p.parent_tel:''}</div>
-    </div>
-    <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:4px">Enfant</div>
-      <div style="font-weight:500;font-size:13px">\${p.enfant_prenom} \${p.enfant_nom}</div>
-      <div style="font-size:12px;color:var(--text3)">\${p.niveau}</div>
-    </div>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:10px">
-      <thead><tr style="background:var(--bg)">
-        <th style="padding:5px 10px;text-align:left;font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Article</th>
-        <th style="padding:5px 10px;text-align:center;font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Taille</th>
-        <th style="padding:5px 10px;text-align:center;font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Qté</th>
-        <th style="padding:5px 10px;text-align:right;font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Total</th>
-      </tr></thead>
-      <tbody>\${lignesHtml}</tbody>
-    </table>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px 0;font-weight:700;font-size:14px">
-      <span>Total</span>
-      <span style="color:var(--blue)">\${fmt((p.lignes||[]).reduce((s,l)=>s+l.quantite*l.prix_unitaire,0))}</span>
-    </div>
-    \${p.note?\`<div style="margin-top:10px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px;color:var(--text2)">📝 \${p.note}</div>\`:''}
-  \`;
+  const lignesHtml = (p.lignes||[]).map(l=>`<tr>
+    <td style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px">${l.article_nom}</td>
+    <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center">${l.taille}</td>
+    <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center">${l.quantite}</td>
+    <td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;font-weight:600">${fmt(l.quantite*l.prix_unitaire)}</td>
+  </tr>`).join('');
+  body.innerHTML = `<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;color:var(--text2);margin-bottom:4px">Parent</div>
+    <div style="font-weight:500;font-size:13px">${p.parent_prenom} ${p.parent_nom}</div>
+    <div style="font-size:12px;color:var(--text3)">${p.parent_email}${p.parent_tel?' · '+p.parent_tel:''}</div>
+  </div>
+  <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;color:var(--text2);margin-bottom:4px">Enfant</div>
+    <div style="font-weight:500;font-size:13px">${p.enfant_prenom} ${p.enfant_nom}</div>
+    <div style="font-size:12px;color:var(--text3)">${p.niveau}</div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:10px">
+    <thead><tr style="background:var(--bg)">
+      <th style="padding:5px 10px;text-align:left;font-size:11px;color:var(--text2)">Article</th>
+      <th style="padding:5px 10px;text-align:center;font-size:11px;color:var(--text2)">Taille</th>
+      <th style="padding:5px 10px;text-align:center;font-size:11px;color:var(--text2)">Qté</th>
+      <th style="padding:5px 10px;text-align:right;font-size:11px;color:var(--text2)">Total</th>
+    </tr></thead>
+    <tbody>${lignesHtml}</tbody>
+  </table>
+  <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px;padding:8px 10px 0">
+    <span>Total</span>
+    <span style="color:var(--blue)">${fmt((p.lignes||[]).reduce((s,l)=>s+l.quantite*l.prix_unitaire,0))}</span>
+  </div>`;
 }
 
 function clearDistDetail() {
-  const c = document.getElementById('dist-detail-card');
-  if (c) { c.style.display='none'; c.dataset.pid=''; }
+  const c=document.getElementById('dist-detail-card');
+  if(c){c.style.display='none';c.dataset.pid='';}
 }
 
-function toggleDist(id) {
-  const chk=document.getElementById('dc-'+id);
-  chk.checked=!chk.checked;
-  document.getElementById('dr-'+id).classList.toggle('sel',chk.checked);
-  updateDistTotal();
+function updateDistTotal() {
+  let t=0;
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const id=r.id.replace('dr-','');
+    if(document.getElementById('dc-'+id)?.checked) t+=parseFloat(r.dataset.total||0);
+  });
+  document.getElementById('dist-total').textContent=fmt(t);
+}
+
+function filterDist(q) {
+  const ql=q.toLowerCase();
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const match=(r.dataset.name+r.dataset.meta).toLowerCase().includes(ql);
+    r.style.display=match?'':'none';
+  });
+}
+
+async function validerDist() {
+  const ids=[];
+  document.querySelectorAll('.dist-row').forEach(r=>{
+    const id=r.id.replace('dr-','');
+    if(document.getElementById('dc-'+id)?.checked) ids.push(id);
+  });
+  if(!ids.length){alert('Sélectionnez au moins une précommande');return;}
+  const res=await api('/api/distributions','POST',{precommande_ids:ids,mode_paiement:v('mode-pay'),note:v('dist-note')});
+  if(res.ok) go('distribution');
+  else alert(res.error||'Erreur');
+}
+
+async function voirHistoDist() {
+  const data=await api('/api/distributions');
+  const total=data.reduce((s,d)=>s+(d.montant_total||0),0);
+  modal(`
+    <div class="modal-title">Historique des distributions</div>
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat"><div class="stat-l">Total distribué</div><div class="stat-v green">${data.length}</div></div>
+      <div class="stat"><div class="stat-l">Montant encaissé</div><div class="stat-v blue">${fmt(total)}</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Enfant</th><th>Niveau</th><th>Parent</th><th>Montant</th><th>Paiement</th><th>Date</th><th></th></tr></thead>
+      <tbody>${data.map(d=>`<tr>
+        <td><strong>${d.enfant_prenom} ${d.enfant_nom}</strong></td>
+        <td><span class="badge badge-blue">${d.niveau}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${d.parent_prenom} ${d.parent_nom}</td>
+        <td class="price">${fmt(d.montant_total)}</td>
+        <td><span class="badge badge-gray">${d.mode_paiement}</span></td>
+        <td style="font-size:12px;color:var(--text3)">${(d.validated_at||'').slice(0,10)}</td>
+        <td><button class="btn btn-xs btn-danger" onclick="annulerDist('${d.id}')">✕</button></td>
+      </tr>`).join('')||`<tr><td colspan=7 class="empty"><p>Aucune distribution</p></td></tr>`}</tbody>
+    </table>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>`);
+}
+
+async function annulerDist(id) {
+  if(!confirm('Annuler cette distribution ? Le stock sera recrédité.')) return;
+  await api('/api/distributions/'+id,'DELETE');
+  closeModal(); go('distribution');
 }
 
 // ── STOCK ─────────────────────────────────────────────
