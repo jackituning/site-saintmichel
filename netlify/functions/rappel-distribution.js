@@ -12,7 +12,7 @@ import { getDb } from "./_lib/firebase.js";
 import nodemailer from "nodemailer";
 
 // ── Jours avant distribution où un rappel est envoyé ──────────────────────
-const JOURS_RAPPELS = [7, 3, 1]; // J-7, J-3, J-1
+const JOURS_RAPPELS = [7];
 
 // ── Mailer ────────────────────────────────────────────────────────────────
 function createTransport() {

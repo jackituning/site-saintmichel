@@ -95,12 +95,15 @@ tbody tr:hover td{background:var(--bg)}
 .total-bar{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
 .total-bar span:first-child{font-size:12.5px;color:var(--blue);font-weight:500}
 .total-bar strong{font-family:var(--mono);font-size:16px;color:var(--blue);font-weight:600}
-.dist-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:.12s;margin-bottom:6px;user-select:none}
-.dist-row:hover{border-color:var(--blue-border);background:var(--blue-bg)}
+.dist-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);transition:.12s;margin-bottom:6px;user-select:none}
+.dist-row:hover{border-color:var(--blue-border)}
 .dist-row.sel{border-color:var(--blue);background:var(--blue-bg)}
-.dist-row input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px}
-.dist-info{flex:1}
+.dist-row input[type=checkbox]{accent-color:var(--blue);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.dist-info{flex:1;cursor:pointer;padding:2px 4px;border-radius:5px;transition:.12s}
+.dist-info:hover{background:var(--surface2)}
 .dist-name{font-weight:600;font-size:13px}
+.dist-name-link{color:var(--blue);text-decoration:underline;text-decoration-color:transparent;transition:.12s}
+.dist-info:hover .dist-name-link{text-decoration-color:var(--blue)}
 .dist-meta{font-size:11px;color:var(--text2);margin-top:2px}
 .dist-total{font-family:var(--mono);font-weight:600;color:var(--blue);font-size:13px}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
@@ -122,6 +125,14 @@ tbody tr:hover td{background:var(--bg)}
 .search-wrap input{padding-left:32px}
 .search-wrap::before{content:"⌕";position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none}
 .divider{height:1px;background:var(--border);margin:14px 0}
+.creneau-card{border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px;background:var(--bg);position:relative}
+.creneau-card .form-group{margin-bottom:8px}
+.creneau-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.creneau-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2)}
+.creneau-del{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:18px;line-height:1;padding:0 6px;border-radius:4px}
+.creneau-del:hover{background:var(--red-bg)}
+.creneau-list-display{font-size:11.5px;color:var(--text2);line-height:1.5}
+.creneau-list-display div{margin-bottom:2px}
 @media(max-width:800px){
   aside{width:52px}
   .aside-logo p,.nav-group,.nav-item span,.aside-foot span{display:none}
@@ -220,17 +231,16 @@ let USER = localStorage.getItem('sm_user') || '';
 let PAGE = 'dashboard';
 const PAGES = {dashboard:'Tableau de bord',precommandes:'Précommandes',fournisseur:'Commande fournisseur',distribution:'Distribution',stock:'Stock',articles:'Articles & prix',campagnes:'Campagnes'};
 let ARTICLES_CACHE = [];
+let CRENEAUX_BUFFER = [];
 
-// ── API — pointe vers les Netlify Functions ────────────
+// ── API ───────────────────────────────────────────────
 async function api(path, method='GET', body=null) {
-  // /api/login → /api/login  (netlify.toml redirige vers /.netlify/functions/login)
   const r = await fetch(path, {
     method,
     headers: {'Content-Type':'application/json', ...(TOKEN ? {'X-Token':TOKEN} : {})},
     body: body ? JSON.stringify(body) : undefined
   });
   if (r.status === 204) return {};
-  // Export CSV : retourner la réponse brute
   const ct = r.headers.get('content-type') || '';
   if (ct.includes('text/csv')) {
     const blob = await r.blob();
@@ -286,7 +296,8 @@ async function go(p) {
 async function pgDashboard() {
   const [s, camp] = await Promise.all([api('/api/stats'), api('/api/campagnes/active')]);
   const badge = document.getElementById('hd-badge');
-  if (camp.annee) { badge.textContent = `Campagne ${camp.annee}`; badge.style.display=''; }
+  const campLabel = camp.nom || camp.annee;
+  if (campLabel) { badge.textContent = `Campagne ${campLabel}`; badge.style.display=''; }
   else badge.style.display='none';
   pg(`
   <div class="stat-grid">
@@ -394,7 +405,7 @@ async function openPrecomForm() {
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Email *</label><input class="form-control" id="pe" type="email" placeholder="marie.dupont@email.fr"></div>
-      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-control" id="pt" placeholder="06 xx xx xx xx"></div>
+      <div class="form-group"><label class="form-label">Téléphone *</label><input class="form-control" id="pt" placeholder="06 xx xx xx xx"></div>
     </div>
     <div class="section-sep">Informations enfant</div>
     <div class="form-row">
@@ -404,7 +415,7 @@ async function openPrecomForm() {
     <div class="form-row">
       <div class="form-group"><label class="form-label">Niveau *</label>
         <select class="form-control" id="niv">
-          ${['TPS','PS','MS','GS','CP','CE1','CE2','CM1','CM2'].map(n=>`<option>${n}</option>`).join('')}
+          ${['PS','MS','GS','CP','CE1','CE2','CM1','CM2'].map(n=>`<option>${n}</option>`).join('')}
         </select>
       </div>
       <div class="form-group"><label class="form-label">Note interne</label><input class="form-control" id="pnote" placeholder="Optionnel"></div>
@@ -440,7 +451,7 @@ async function submitPrecom() {
   document.querySelectorAll('.qty-input').forEach(i=>{ const q=parseInt(i.value)||0; if(q>0) lignes.push({article_id:i.dataset.aid,taille:i.dataset.taille,quantite:q,prix_unitaire:+i.dataset.prix}); });
   if(!lignes.length){alert('Saisir au moins un article');return;}
   const b={parent_nom:v('pn'),parent_prenom:v('pp'),parent_email:v('pe'),parent_tel:v('pt'),enfant_nom:v('en'),enfant_prenom:v('ep'),niveau:v('niv'),note:v('pnote'),lignes};
-  if(!b.parent_nom||!b.parent_email||!b.enfant_nom){alert('Champs obligatoires manquants');return;}
+  if(!b.parent_nom||!b.parent_email||!b.parent_tel||!b.enfant_nom){alert('Champs obligatoires manquants (téléphone inclus)');return;}
   const r=await api('/api/precommandes','POST',b);
   if(r.id){closeModal();go('precommandes');}else alert(r.error||'Erreur');
 }
@@ -469,7 +480,49 @@ async function viewPrecom(id) {
       <tbody>${(p.lignes||[]).map(l=>`<tr><td>${l.article_nom}</td><td>${l.taille}</td><td class="num">${l.quantite}</td><td class="num">${l.prix_unitaire.toFixed(2)} €</td><td class="price">${fmt(l.quantite*l.prix_unitaire)}</td></tr>`).join('')}</tbody>
     </table>
     <div class="total-bar" style="margin-top:12px"><span>Total</span><strong>${fmt(total)}</strong></div>
-    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Fermer</button></div>`);
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+      ${!p.distribution?`<button class="btn btn-primary" onclick="openEditPrecomArticles('${p.id}')">✎ Modifier les articles</button>`:''}
+    </div>`);
+}
+
+async function openEditPrecomArticles(id) {
+  const p = await api('/api/precommandes/'+id);
+  const arts = ARTICLES_CACHE.filter(a=>a.actif);
+  const allTailles = [...new Set(arts.flatMap(a=>a.tailles||[]))];
+  const currentQty = {};
+  (p.lignes||[]).forEach(l=>{ currentQty[`${l.article_id}|${l.taille}`] = l.quantite; });
+  modal(`
+    <div class="modal-title">Modifier les articles — ${p.enfant_prenom} ${p.enfant_nom}</div>
+    <div class="alert alert-info">Vous modifiez uniquement les articles, quantités et tailles. Les infos parent et enfant restent inchangées.</div>
+    <div style="overflow-x:auto">
+      <table class="qty-table">
+        <thead><tr><th>Article</th>${allTailles.map(t=>`<th>${t}</th>`).join('')}</tr></thead>
+        <tbody>${arts.map(a=>{
+          const tailles = a.tailles||[];
+          return `<tr><td>${a.nom}<br><small style="color:var(--text3);font-weight:400">${a.prix.toFixed(2)} €</small></td>
+            ${allTailles.map(t=>{
+              if(!tailles.includes(t)) return `<td style="background:var(--surface2)">—</td>`;
+              const q = currentQty[`${a.id}|${t}`] || 0;
+              return `<td><input class="qty-input" type="number" min="0" value="${q}" data-aid="${a.id}" data-taille="${t}" data-prix="${a.prix}" oninput="calcTotal()"></td>`;
+            }).join('')}
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+    <div class="total-bar"><span>Nouveau total</span><strong id="total-val">${fmt((p.lignes||[]).reduce((s,l)=>s+l.quantite*l.prix_unitaire,0))}</strong></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="viewPrecom('${id}')">← Retour</button>
+      <button class="btn btn-primary" onclick="submitEditPrecom('${id}')">Enregistrer les modifications</button>
+    </div>`);
+}
+
+async function submitEditPrecom(id) {
+  const lignes=[];
+  document.querySelectorAll('.qty-input').forEach(i=>{ const q=parseInt(i.value)||0; if(q>0) lignes.push({article_id:i.dataset.aid,taille:i.dataset.taille,quantite:q,prix_unitaire:+i.dataset.prix}); });
+  if(!lignes.length){if(!confirm('Aucun article sélectionné. La précommande sera vide. Continuer ?'))return;}
+  const r = await api('/api/precommandes/'+id,'PUT',{lignes});
+  if(r.ok||r.id){closeModal();go('precommandes');}else alert(r.error||'Erreur lors de la modification');
 }
 
 async function delPrecom(id) {
@@ -543,12 +596,13 @@ async function pgDistribution() {
         <span style="font-weight:600;font-size:13.5px">Précommandes à distribuer <span class="badge badge-blue" style="margin-left:6px">${data.length}</span></span>
         <div class="search-wrap"><input class="form-control" id="search-d" placeholder="Rechercher…" style="width:200px" oninput="filterDist(this.value)"></div>
       </div>
+      <div style="font-size:11.5px;color:var(--text3);margin-bottom:8px">💡 Cochez pour valider · Cliquez sur le nom pour voir le détail</div>
       <div id="dist-list">
         ${data.length ? data.map(p=>`
-          <div class="dist-row" id="dr-${p.id}" onclick="selectDist('${p.id}')" data-total="${p.total}" data-name="${p.enfant_prenom} ${p.enfant_nom}" data-meta="${p.parent_prenom} ${p.parent_nom}">
-            <input type="checkbox" id="dc-${p.id}" onclick="event.stopPropagation()" onchange="updateDistTotal()">
-            <div class="dist-info">
-              <div class="dist-name">${p.enfant_prenom} ${p.enfant_nom} <span class="badge badge-blue" style="margin-left:4px">${p.niveau}</span></div>
+          <div class="dist-row" id="dr-${p.id}" data-total="${p.total}" data-name="${p.enfant_prenom} ${p.enfant_nom}" data-meta="${p.parent_prenom} ${p.parent_nom}">
+            <input type="checkbox" id="dc-${p.id}" onchange="toggleDistSel('${p.id}')">
+            <div class="dist-info" onclick="showDistDetail('${p.id}')">
+              <div class="dist-name"><span class="dist-name-link">${p.enfant_prenom} ${p.enfant_nom}</span> <span class="badge badge-blue" style="margin-left:4px">${p.niveau}</span></div>
               <div class="dist-meta">${p.parent_prenom} ${p.parent_nom} · ${p.nb_lignes} article(s) · <span style="color:var(--text3);font-size:11px">${p.parent_email}</span></div>
             </div>
             <div class="dist-total">${fmt(p.total)}</div>
@@ -595,15 +649,18 @@ async function pgDistribution() {
   </div>`);
 }
 
-async function selectDist(id) {
+// Coche/décoche = sélection seulement (n'ouvre PAS le détail)
+function toggleDistSel(id) {
   const chk = document.getElementById('dc-'+id);
-  chk.checked = !chk.checked;
   document.getElementById('dr-'+id).classList.toggle('sel', chk.checked);
   updateDistTotal();
+}
+
+// Clic sur le NOM = ouvre le détail (ne touche PAS la sélection)
+async function showDistDetail(id) {
   const card = document.getElementById('dist-detail-card');
   const body = document.getElementById('dist-detail-body');
   const title = document.getElementById('dist-detail-title');
-  if (!chk.checked) { if (card.dataset.pid===id) clearDistDetail(); return; }
   card.dataset.pid = id;
   card.style.display = 'block';
   body.innerHTML = '<p style="color:var(--text3);font-size:13px">Chargement…</p>';
@@ -845,51 +902,108 @@ async function pgCampagnes() {
   </div>
   <div class="card">
     <table>
-      <thead><tr><th>Année</th><th>Statut</th><th>Surplus %</th><th>Précommandes</th><th>CA total</th><th>Ouverture</th><th>Fermeture</th><th></th></tr></thead>
-      <tbody>${data.map(c=>`<tr>
-        <td><strong>${c.annee}</strong></td>
-        <td><span class="badge ${c.statut==='ouverte'?'badge-green':'badge-gray'}">${c.statut}</span></td>
-        <td class="num">${c.surplus_pct}%</td>
-        <td class="num">${c.nb_precommandes}</td>
-        <td class="price">${fmt(c.ca_total)}</td>
-        <td style="color:var(--text3);font-size:12px">${c.date_ouverture||'—'}</td>
-        <td style="color:var(--text3);font-size:12px">${c.date_fermeture||'—'}</td>
-        <td><div class="gap-row">
-          ${c.statut==='ouverte'?`<button class="btn btn-xs btn-danger" onclick="setCampStatut('${c.id}','fermee')">Fermer</button>`:''}
-          ${c.statut==='fermee'?`<button class="btn btn-xs btn-secondary" onclick="setCampStatut('${c.id}','ouverte')">Réouvrir</button>`:''}
-        </div></td>
-      </tr>`).join('')}</tbody>
+      <thead><tr><th>Nom</th><th>Statut</th><th>Surplus %</th><th>Précommandes</th><th>CA total</th><th>Créneaux de distribution</th><th></th></tr></thead>
+      <tbody>${data.length ? data.map(c=>{
+        const creneaux = c.creneaux || [];
+        const creneauxHtml = creneaux.length ? `<div class="creneau-list-display">${creneaux.map(cr=>`
+          <div>📅 <strong>${fmtDate(cr.date_debut)}${cr.date_fin&&cr.date_fin!==cr.date_debut?' → '+fmtDate(cr.date_fin):''}</strong>${cr.heure?' · '+cr.heure:''}${cr.lieu?' · '+cr.lieu:''}</div>
+        `).join('')}</div>` : `<span style="color:var(--text3);font-size:12px">—</span>`;
+        return `<tr>
+          <td><strong>${c.nom || c.annee || '(sans nom)'}</strong></td>
+          <td><span class="badge ${c.statut==='ouverte'?'badge-green':'badge-gray'}">${c.statut}</span></td>
+          <td class="num">${c.surplus_pct}%</td>
+          <td class="num">${c.nb_precommandes||0}</td>
+          <td class="price">${fmt(c.ca_total||0)}</td>
+          <td>${creneauxHtml}</td>
+          <td><div class="gap-row">
+            <button class="btn btn-xs btn-secondary" onclick="openCampForm('${c.id}')">Modifier</button>
+            ${c.statut==='ouverte'?`<button class="btn btn-xs btn-danger" onclick="setCampStatut('${c.id}','fermee')">Fermer</button>`:''}
+            ${c.statut==='fermee'?`<button class="btn btn-xs btn-secondary" onclick="setCampStatut('${c.id}','ouverte')">Réouvrir</button>`:''}
+          </div></td>
+        </tr>`;
+      }).join('') : `<tr><td colspan=7 class="empty"><p>Aucune campagne</p></td></tr>`}</tbody>
     </table>
   </div>`);
 }
 
-async function openCampForm() {
+async function openCampForm(id=null) {
+  let c = id ? (await api('/api/campagnes/'+id)) : {nom:'',surplus_pct:10,creneaux:[]};
+  CRENEAUX_BUFFER = Array.isArray(c.creneaux) ? c.creneaux.map(x=>({...x})) : [];
+  // Migration depuis ancien format si présent
+  if(!CRENEAUX_BUFFER.length && (c.date_distribution || c.heure_distribution || c.lieu_distribution)){
+    CRENEAUX_BUFFER.push({
+      date_debut: c.date_distribution || '',
+      date_fin: c.date_distribution || '',
+      heure: c.heure_distribution || '',
+      lieu: c.lieu_distribution || ''
+    });
+  }
   modal(`
-    <div class="modal-title">Nouvelle campagne</div>
+    <div class="modal-title">${id?'Modifier':'Nouvelle'} campagne</div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Année</label><input class="form-control" id="cy" type="number" value="${new Date().getFullYear()+1}"></div>
-      <div class="form-group"><label class="form-label">Surplus % recommandé</label><input class="form-control" id="cs" type="number" value="10" min="0" max="100"></div>
+      <div class="form-group"><label class="form-label">Nom de la campagne *</label><input class="form-control" id="cn" value="${(c.nom||'').replace(/"/g,'&quot;')}" placeholder="ex : Rentrée 2026, Spéciale 100 ans…"></div>
+      <div class="form-group"><label class="form-label">Surplus % recommandé</label><input class="form-control" id="cs" type="number" value="${c.surplus_pct||10}" min="0" max="100"></div>
     </div>
-    <div class="form-group"><label class="form-label">Date de distribution</label><input class="form-control" id="cd" type="date"></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Heure de distribution</label><input class="form-control" id="ch" type="time" placeholder="ex: 16h00 – 18h00"></div>
-      <div class="form-group"><label class="form-label">Lieu de distribution</label><input class="form-control" id="cl" type="text" placeholder="ex: Salle polyvalente Saint Michel"></div>
-    </div>
+    <div class="section-sep">Créneaux de distribution</div>
+    <div id="creneaux-zone"></div>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="addCreneau()" style="margin-top:6px">+ Ajouter un créneau</button>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-primary" onclick="submitCamp()">Créer</button>
+      <button class="btn btn-primary" onclick="submitCamp('${id||''}')">${id?'Enregistrer':'Créer'}</button>
     </div>`);
+  renderCreneaux();
 }
 
-async function submitCamp() {
-  const r=await api('/api/campagnes','POST',{
-    annee:+v('cy'),
-    surplus_pct:+v('cs'),
-    date_distribution: v('cd') || null,
-    heure_distribution: v('ch') || null,
-    lieu_distribution: v('cl') || null,
-  });
-  if(r.id){closeModal();go('campagnes');}else alert(r.error||'Erreur');
+function renderCreneaux() {
+  const zone = document.getElementById('creneaux-zone');
+  if (!zone) return;
+  if (!CRENEAUX_BUFFER.length) {
+    zone.innerHTML = `<div style="color:var(--text3);font-size:12.5px;padding:10px;border:1px dashed var(--border);border-radius:var(--r);text-align:center">Aucun créneau pour l'instant — cliquez sur « + Ajouter un créneau » pour en ajouter un.</div>`;
+    return;
+  }
+  zone.innerHTML = CRENEAUX_BUFFER.map((cr,i)=>`
+    <div class="creneau-card">
+      <div class="creneau-head">
+        <span class="creneau-title">Créneau ${i+1}</span>
+        <button type="button" class="creneau-del" onclick="removeCreneau(${i})" title="Supprimer ce créneau">×</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date début</label><input class="form-control" type="date" value="${cr.date_debut||''}" onchange="updCreneau(${i},'date_debut',this.value)"></div>
+        <div class="form-group"><label class="form-label">Date fin</label><input class="form-control" type="date" value="${cr.date_fin||''}" onchange="updCreneau(${i},'date_fin',this.value)"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Heure</label><input class="form-control" value="${(cr.heure||'').replace(/"/g,'&quot;')}" placeholder="ex : 16h00 – 18h00" onchange="updCreneau(${i},'heure',this.value)"></div>
+        <div class="form-group"><label class="form-label">Lieu</label><input class="form-control" value="${(cr.lieu||'').replace(/"/g,'&quot;')}" placeholder="ex : Salle polyvalente Saint Michel" onchange="updCreneau(${i},'lieu',this.value)"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addCreneau() {
+  CRENEAUX_BUFFER.push({date_debut:'',date_fin:'',heure:'',lieu:''});
+  renderCreneaux();
+}
+
+function removeCreneau(i) {
+  CRENEAUX_BUFFER.splice(i,1);
+  renderCreneaux();
+}
+
+function updCreneau(i, key, val) {
+  if (CRENEAUX_BUFFER[i]) CRENEAUX_BUFFER[i][key] = val;
+}
+
+async function submitCamp(id) {
+  const nom = v('cn').trim();
+  if(!nom){alert('Le nom de la campagne est obligatoire');return;}
+  const creneaux = CRENEAUX_BUFFER
+    .map(cr=>({date_debut:cr.date_debut||'',date_fin:cr.date_fin||cr.date_debut||'',heure:cr.heure||'',lieu:cr.lieu||''}))
+    .filter(cr=>cr.date_debut || cr.heure || cr.lieu);
+  const body = { nom, surplus_pct: +v('cs') || 0, creneaux };
+  const r = id
+    ? await api('/api/campagnes/'+id,'PUT',body)
+    : await api('/api/campagnes','POST',body);
+  if(r.id || r.ok){closeModal();go('campagnes');} else alert(r.error||'Erreur');
 }
 
 async function setCampStatut(id,s) {
@@ -904,6 +1018,11 @@ function modal(html){ document.getElementById('modal').innerHTML=html; document.
 function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
 function v(id){ return (document.getElementById(id)||{}).value||''; }
 function fmt(n){ return parseFloat(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}); }
+function fmtDate(d){
+  if(!d) return '';
+  const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+}
 
 async function exportCSV(path, filename) {
   const r = await fetch(path, { headers: TOKEN ? {'X-Token':TOKEN} : {} });

@@ -8,463 +8,155 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #FAF8F5;
-  --surface: #FFFFFF;
-  --border: #E8E3DC;
-  --border2: #D4CEC5;
-  --text: #1A1815;
-  --text2: #6B655C;
-  --text3: #9B958C;
-  --blue: #1B4FD8;
-  --blue-light: #EEF2FF;
-  --green: #15803D;
-  --green-light: #F0FDF4;
-  --green-border: #86EFAC;
-  --red: #B91C1C;
-  --red-light: #FEF2F2;
-  --accent: #C8A96E;
-  --accent2: #8B6914;
-  --r: 10px;
-  --font: 'DM Sans', sans-serif;
-  --serif: 'DM Serif Display', serif;
+  --bg: #FAF8F5; --surface: #FFFFFF; --border: #E8E3DC; --border2: #D4CEC5;
+  --text: #1A1815; --text2: #6B655C; --text3: #9B958C;
+  --blue: #1B4FD8; --blue-light: #EEF2FF;
+  --green: #15803D; --green-light: #F0FDF4; --green-border: #86EFAC;
+  --red: #B91C1C; --red-light: #FEF2F2;
+  --accent: #C8A96E; --accent2: #8B6914;
+  --r: 10px; --font: 'DM Sans', sans-serif; --serif: 'DM Serif Display', serif;
   --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
-  --shadow-lg: 0 4px 24px rgba(0,0,0,.08);
 }
- 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 100vh;
-}
- 
-/* ── Header ── */
-.site-header {
-  background: var(--text);
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.site-header h1 {
-  font-family: var(--serif);
-  font-size: 17px;
-  color: #fff;
-  font-weight: 400;
-  letter-spacing: -.01em;
-}
-.site-header p {
-  font-size: 11px;
-  color: rgba(255,255,255,.35);
-  margin-top: 1px;
-}
-.header-badge {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  letter-spacing: .02em;
-}
- 
-/* ── Layout ── */
-.container {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 40px 20px 80px;
-}
- 
-/* ── Intro ── */
-.intro {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.intro-tag {
-  display: inline-block;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--accent2);
-  background: #FEF3C7;
-  border: 1px solid #FDE68A;
-  padding: 4px 14px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-}
-.intro h2 {
-  font-family: var(--serif);
-  font-size: 36px;
-  font-weight: 400;
-  letter-spacing: -.02em;
-  color: var(--text);
-  line-height: 1.15;
-  margin-bottom: 12px;
-}
-.intro p {
-  color: var(--text2);
-  font-size: 15px;
-  max-width: 520px;
-  margin: 0 auto;
-}
- 
-/* ── Campagne info ── */
-.campagne-info {
-  background: linear-gradient(135deg, #1A1815 0%, #2D2926 100%);
-  border-radius: var(--r);
-  padding: 18px 24px;
-  margin-bottom: 28px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: rgba(255,255,255,.85);
-  font-size: 13.5px;
-}
-.campagne-info svg { flex-shrink: 0; opacity: .6; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+/* Header */
+.site-header { background: var(--text); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { height: 38px; width: auto; }
+.header-text h1 { font-family: var(--serif); font-size: 17px; color: #fff; font-weight: 400; letter-spacing: -.01em; }
+.header-text p { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 1px; }
+.header-badge { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--accent); color: var(--accent); letter-spacing: .02em; }
+
+.container { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+
+/* Intro */
+.intro { text-align: center; margin-bottom: 40px; }
+.intro-tag { display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); background: #FEF3C7; border: 1px solid #FDE68A; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; }
+.intro h2 { font-family: var(--serif); font-size: 36px; font-weight: 400; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 12px; }
+.intro p { color: var(--text2); font-size: 15px; max-width: 520px; margin: 0 auto; }
+
+/* Campagne info */
+.campagne-info { background: linear-gradient(135deg, #1A1815 0%, #2D2926 100%); border-radius: var(--r); padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; color: rgba(255,255,255,.85); font-size: 13.5px; }
 .campagne-info strong { color: #fff; }
- 
-/* ── Cards ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.card-head {
-  padding: 18px 24px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.card-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: var(--blue-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+.card-head { padding: 18px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.card-icon { width: 34px; height: 34px; border-radius: 8px; background: var(--blue-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .card-icon svg { width: 16px; height: 16px; color: var(--blue); }
-.card-title {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -.01em;
-}
-.card-subtitle {
-  font-size: 12px;
-  color: var(--text2);
-  margin-top: 1px;
-}
+.card-title { font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+.card-subtitle { font-size: 12px; color: var(--text2); margin-top: 1px; }
 .card-body { padding: 24px; }
- 
-/* ── Form ── */
+
+/* Form */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
 .form-group { margin-bottom: 16px; }
 .form-group:last-child { margin-bottom: 0; }
-.form-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--text2);
-  margin-bottom: 6px;
-}
+.form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text2); margin-bottom: 6px; }
 .form-label span { color: var(--red); margin-left: 2px; }
-.form-control {
-  width: 100%;
-  padding: 10px 13px;
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  font: 14px var(--font);
-  background: var(--surface);
-  color: var(--text);
-  transition: border .15s, box-shadow .15s;
-  appearance: none;
-}
-.form-control:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(27,79,216,.1);
-}
+.form-control { width: 100%; padding: 10px 13px; border: 1px solid var(--border2); border-radius: 8px; font: 14px var(--font); background: var(--surface); color: var(--text); transition: border .15s, box-shadow .15s; appearance: none; }
+.form-control:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(27,79,216,.1); }
 .form-control::placeholder { color: var(--text3); }
 select.form-control { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B655C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; cursor: pointer; }
 textarea.form-control { resize: vertical; min-height: 72px; }
- 
-/* ── Articles ── */
-.articles-grid {
-  display: grid;
-  gap: 12px;
-}
-.article-item {
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  cursor: pointer;
-  transition: border-color .15s, background .15s, box-shadow .15s;
-  position: relative;
-}
-.article-item:hover {
-  border-color: var(--blue);
-  background: var(--blue-light);
-}
-.article-item.selected {
-  border-color: var(--blue);
-  background: var(--blue-light);
-  box-shadow: 0 0 0 3px rgba(27,79,216,.1);
-}
-.article-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.article-name {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text);
-}
-.article-desc {
-  font-size: 12.5px;
-  color: var(--text2);
-  margin-top: 2px;
-}
-.article-price {
-  font-family: var(--serif);
-  font-size: 20px;
-  color: var(--blue);
-  white-space: nowrap;
-  font-weight: 400;
-}
-.article-controls {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-}
+
+/* Enfants multiples */
+.enfant-block { border: 1.5px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 14px; position: relative; }
+.enfant-block-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.btn-remove-enfant { background: var(--red-light); border: 1px solid #FECACA; color: var(--red); border-radius: 6px; padding: 4px 10px; font: 500 12px var(--font); cursor: pointer; }
+.btn-add-enfant { display: inline-flex; align-items: center; gap: 6px; font: 500 13px var(--font); color: var(--blue); background: var(--blue-light); border: 1.5px dashed var(--blue); border-radius: 8px; padding: 10px 18px; cursor: pointer; width: 100%; justify-content: center; transition: background .15s; margin-top: 4px; }
+.btn-add-enfant:hover { background: #dde8ff; }
+
+/* Articles */
+.articles-grid { display: grid; gap: 14px; }
+.article-item { border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.article-item:hover { border-color: var(--blue); }
+.article-item.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(27,79,216,.1); }
+.article-top { display: flex; gap: 16px; padding: 16px 18px; align-items: flex-start; }
+.article-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); }
+.article-img-placeholder { width: 80px; height: 80px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text3); font-size: 28px; }
+.article-info { flex: 1; }
+.article-name { font-weight: 600; font-size: 14px; }
+.article-desc { font-size: 12.5px; color: var(--text2); margin-top: 3px; }
+.article-price { font-family: var(--serif); font-size: 22px; color: var(--blue); white-space: nowrap; font-weight: 400; margin-top: 4px; }
+.article-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+.article-item.selected .article-check { background: var(--blue); border-color: var(--blue); }
+.article-check svg { width: 12px; height: 12px; color: #fff; opacity: 0; transition: opacity .15s; }
+.article-item.selected .article-check svg { opacity: 1; }
+.article-controls { display: none; flex-direction: column; gap: 10px; padding: 0 18px 16px; border-top: 1px solid var(--border); margin-top: 4px; padding-top: 14px; background: var(--blue-light); }
 .article-item.selected .article-controls { display: flex; }
-.article-ligne {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-}
+.article-ligne { display: flex; gap: 12px; align-items: flex-end; }
 .article-ligne .form-group { margin-bottom: 0; flex: 1; }
-.btn-add-taille {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font: 500 12px var(--font);
-  color: var(--blue);
-  background: var(--blue-light);
-  border: 1px dashed var(--blue);
-  border-radius: 7px;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: background .15s;
-  width: 100%;
-  justify-content: center;
-}
+.btn-add-taille { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--font); color: var(--blue); background: var(--surface); border: 1px dashed var(--blue); border-radius: 7px; padding: 7px 14px; cursor: pointer; width: 100%; justify-content: center; transition: background .15s; }
 .btn-add-taille:hover { background: #dde8ff; }
-.btn-remove-ligne {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid var(--border2);
-  background: var(--bg);
-  color: var(--text2);
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background .15s, color .15s;
-  margin-bottom: 0;
-  align-self: flex-end;
-  padding-bottom: 2px;
-}
+.btn-remove-ligne { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-end; transition: all .15s; }
 .btn-remove-ligne:hover { background: var(--red-light); color: var(--red); border-color: #FECACA; }
- 
-/* ── Récap ── */
+
+/* Récap */
 #recap-section { display: none; }
 .recap-lines { list-style: none; }
-.recap-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13.5px;
-  gap: 12px;
-}
+.recap-line { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; gap: 12px; }
 .recap-line:last-child { border-bottom: none; }
 .recap-line-info { flex: 1; }
 .recap-line-name { font-weight: 500; }
-.recap-line-detail { font-size: 12px; color: var(--text2); margin-top: 1px; }
+.recap-line-detail { font-size: 12px; color: var(--text2); }
+.recap-line-child { font-size: 11px; color: var(--text3); }
 .recap-line-price { font-weight: 600; white-space: nowrap; }
-.recap-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: var(--bg);
-  border-top: 2px solid var(--border);
-  font-weight: 600;
-  font-size: 15px;
-}
-.recap-total-amount {
-  font-family: var(--serif);
-  font-size: 24px;
-  color: var(--blue);
-}
- 
-/* ── Submit ── */
-.submit-area {
-  margin-top: 28px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.btn-submit {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 28px;
-  background: var(--text);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font: 600 14px var(--font);
-  cursor: pointer;
-  transition: background .15s, transform .1s;
-  letter-spacing: -.01em;
-}
+.recap-total { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg); border-top: 2px solid var(--border); font-weight: 600; font-size: 15px; }
+.recap-total-amount { font-family: var(--serif); font-size: 24px; color: var(--blue); }
+
+/* Submit */
+.submit-area { margin-top: 28px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.btn-submit { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; background: var(--text); color: #fff; border: none; border-radius: 10px; font: 600 14px var(--font); cursor: pointer; transition: background .15s, transform .1s; }
 .btn-submit:hover { background: #2D2926; }
 .btn-submit:active { transform: scale(.98); }
 .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.btn-submit svg { width: 16px; height: 16px; }
 .submit-note { font-size: 12px; color: var(--text3); line-height: 1.5; }
- 
-/* ── États ── */
-.loading-state, .error-state, .closed-state {
-  text-align: center;
-  padding: 64px 24px;
-}
-.state-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-}
-.state-icon.spin { animation: spin .8s linear infinite; }
-.state-icon.blue { background: var(--blue-light); color: var(--blue); }
-.state-icon.red { background: var(--red-light); color: var(--red); }
-.state-title { font-family: var(--serif); font-size: 22px; margin-bottom: 8px; }
-.state-text { color: var(--text2); font-size: 14px; }
- 
-/* ── Succès ── */
-#success-screen {
-  display: none;
-  text-align: center;
-  padding: 72px 24px;
-  max-width: 520px;
-  margin: 0 auto;
-}
-.success-icon {
-  width: 72px;
-  height: 72px;
-  background: var(--green-light);
-  border: 2px solid var(--green-border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 24px;
-  animation: pop .4s cubic-bezier(.34,1.56,.64,1);
-}
+
+/* Spinner */
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+.btn-submit.loading .spinner { display: block; }
+.btn-submit.loading .btn-text { display: none; }
+
+/* Succès */
+#success-screen { display: none; text-align: center; padding: 72px 24px; max-width: 520px; margin: 0 auto; }
+.success-icon { width: 72px; height: 72px; background: var(--green-light); border: 2px solid var(--green-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
 .success-icon svg { width: 32px; height: 32px; color: var(--green); }
 #success-screen h2 { font-family: var(--serif); font-size: 30px; font-weight: 400; margin-bottom: 12px; }
 #success-screen p { color: var(--text2); font-size: 15px; line-height: 1.7; }
-.success-id {
-  display: inline-block;
-  font-family: monospace;
-  font-size: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 6px;
-  margin-top: 16px;
-  color: var(--text2);
-}
-.success-total {
-  font-family: var(--serif);
-  font-size: 36px;
-  color: var(--blue);
-  margin: 20px 0 8px;
-}
- 
-/* ── Alert ── */
-.alert {
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 16px;
-  display: none;
-}
+.success-id { display: inline-block; font-family: monospace; font-size: 12px; background: var(--bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; margin-top: 16px; color: var(--text2); }
+.success-total { font-family: var(--serif); font-size: 36px; color: var(--blue); margin: 20px 0 8px; }
+
+/* Alert */
+.alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
 .alert.show { display: block; }
 .alert-error { background: var(--red-light); color: var(--red); border: 1px solid #FECACA; }
- 
+
+/* Loading */
+.loading-state { text-align: center; padding: 64px 24px; }
+.state-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; background: var(--blue-light); color: var(--blue); }
+.state-icon.spin { animation: spin .8s linear infinite; }
+
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pop {
-  0% { transform: scale(0); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
- 
-/* ── Spinner ── */
-.spinner {
-  width: 20px; height: 20px;
-  border: 2px solid rgba(255,255,255,.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  display: none;
-}
-.btn-submit.loading .spinner { display: block; }
-.btn-submit.loading .btn-text { display: none; }
+@keyframes pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 </style>
 </head>
 <body>
- 
+
 <header class="site-header">
-  <div>
-    <h1>Saint Michel · Annecy</h1>
-    <p>Groupe Scolaire · Uniformes scolaires</p>
+  <div class="header-left">
+    <img src="/images/LOGO_100_ANS_STMICHEL-01.svg" alt="Saint Michel" class="header-logo">
+    <div class="header-text">
+      <h1>Saint Michel · Annecy</h1>
+      <p>Groupe Scolaire · Uniformes scolaires</p>
+    </div>
   </div>
   <span class="header-badge">Précommande</span>
 </header>
- 
+
 <div class="container">
- 
-  <!-- Succès -->
   <div id="success-screen">
     <div class="success-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
@@ -475,48 +167,32 @@ textarea.form-control { resize: vertical; min-height: 72px; }
     <p style="font-size:13px;color:var(--text3)">Total à régler lors de la distribution</p>
     <div class="success-id" id="s-id"></div>
     <br><br>
-    <button onclick="location.reload()" style="background:none;border:1px solid var(--border);padding:10px 20px;border-radius:8px;cursor:pointer;font:14px var(--font);color:var(--text2)">
-      Nouvelle précommande
-    </button>
+    <button onclick="location.reload()" style="background:none;border:1px solid var(--border);padding:10px 20px;border-radius:8px;cursor:pointer;font:14px var(--font);color:var(--text2)">Nouvelle précommande</button>
   </div>
- 
-  <!-- Formulaire principal -->
+
   <div id="main-content">
- 
-    <!-- État chargement -->
     <div class="loading-state" id="state-loading">
-      <div class="state-icon blue spin">
+      <div class="state-icon spin">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
       </div>
-      <p class="state-text">Chargement du formulaire…</p>
+      <p style="color:var(--text2)">Chargement du formulaire…</p>
     </div>
- 
-    <!-- Erreur -->
-    <div class="error-state" id="state-error" style="display:none">
-      <div class="state-icon red">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      </div>
-      <p class="state-title">Formulaire indisponible</p>
-      <p class="state-text" id="state-error-msg">Les précommandes ne sont pas ouvertes actuellement.<br>Contactez l'établissement pour plus d'informations.</p>
-    </div>
- 
-    <!-- Formulaire -->
+
     <div id="form-content" style="display:none">
- 
       <div class="intro">
         <div class="intro-tag">Campagne <span id="campagne-annee"></span></div>
         <h2>Formulaire de précommande<br><em>d'uniformes scolaires</em></h2>
-        <p>Remplissez ce formulaire pour réserver les uniformes de votre enfant. Un email de confirmation vous sera envoyé.</p>
+        <p>Remplissez ce formulaire pour réserver les uniformes de vos enfants. Un email de confirmation vous sera envoyé.</p>
       </div>
- 
-      <div class="campagne-info">
+
+      <div class="campagne-info" id="campagne-banner">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         <div>Les précommandes sont actuellement <strong>ouvertes</strong>. Le règlement s'effectuera lors de la distribution des uniformes.</div>
       </div>
- 
+
       <div id="alert-global" class="alert alert-error"></div>
- 
-      <!-- Informations parent -->
+
+      <!-- Parent -->
       <div class="card">
         <div class="card-head">
           <div class="card-icon">
@@ -544,59 +220,33 @@ textarea.form-control { resize: vertical; min-height: 72px; }
               <input type="email" class="form-control" id="parent_email" placeholder="marie.dupont@email.com" autocomplete="email">
             </div>
             <div class="form-group">
-              <label class="form-label">Téléphone</label>
+              <label class="form-label">Téléphone <span>*</span></label>
               <input type="tel" class="form-control" id="parent_tel" placeholder="06 12 34 56 78" autocomplete="tel">
             </div>
           </div>
         </div>
       </div>
- 
-      <!-- Informations enfant -->
+
+      <!-- Enfants -->
       <div class="card">
         <div class="card-head">
           <div class="card-icon" style="background:#FEF3C7">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
           </div>
           <div>
-            <div class="card-title">Informations de l'enfant</div>
-            <div class="card-subtitle">Élève pour lequel la commande est effectuée</div>
+            <div class="card-title">Enfants</div>
+            <div class="card-subtitle">Vous pouvez ajouter plusieurs enfants</div>
           </div>
         </div>
         <div class="card-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Nom de l'enfant <span>*</span></label>
-              <input type="text" class="form-control" id="enfant_nom" placeholder="Dupont">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Prénom de l'enfant <span>*</span></label>
-              <input type="text" class="form-control" id="enfant_prenom" placeholder="Lucas">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Niveau / Classe <span>*</span></label>
-            <select class="form-control" id="niveau">
-              <option value="">— Sélectionnez le niveau —</option>
-              <option>Petite Section (PS)</option>
-              <option>Moyenne Section (MS)</option>
-              <option>Grande Section (GS)</option>
-              <option>CP</option>
-              <option>CE1</option>
-              <option>CE2</option>
-              <option>CM1</option>
-              <option>CM2</option>
-              <option>6ème</option>
-              <option>5ème</option>
-              <option>4ème</option>
-              <option>3ème</option>
-              <option>2nde</option>
-              <option>1ère</option>
-              <option>Terminale</option>
-            </select>
-          </div>
+          <div id="enfants-container"></div>
+          <button class="btn-add-enfant" onclick="addEnfant()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Ajouter un autre enfant
+          </button>
         </div>
       </div>
- 
+
       <!-- Articles -->
       <div class="card">
         <div class="card-head">
@@ -605,15 +255,15 @@ textarea.form-control { resize: vertical; min-height: 72px; }
           </div>
           <div>
             <div class="card-title">Articles à commander</div>
-            <div class="card-subtitle">Sélectionnez les articles et les tailles souhaitées</div>
+            <div class="card-subtitle">Cliquez sur un article pour le sélectionner</div>
           </div>
         </div>
         <div class="card-body">
           <div id="articles-grid" class="articles-grid"></div>
         </div>
       </div>
- 
-      <!-- Récapitulatif -->
+
+      <!-- Récap -->
       <div class="card" id="recap-section">
         <div class="card-head">
           <div class="card-icon" style="background:#EEF2FF">
@@ -632,7 +282,7 @@ textarea.form-control { resize: vertical; min-height: 72px; }
           </div>
         </div>
       </div>
- 
+
       <!-- Note -->
       <div class="card">
         <div class="card-head">
@@ -650,8 +300,7 @@ textarea.form-control { resize: vertical; min-height: 72px; }
           </div>
         </div>
       </div>
- 
-      <!-- Bouton envoi -->
+
       <div class="submit-area">
         <button class="btn-submit" id="btn-submit" onclick="submitForm()">
           <div class="spinner"></div>
@@ -662,109 +311,211 @@ textarea.form-control { resize: vertical; min-height: 72px; }
         </button>
         <p class="submit-note">En soumettant ce formulaire, vous recevrez<br>un email de confirmation à l'adresse indiquée.</p>
       </div>
- 
-    </div><!-- /#form-content -->
-  </div><!-- /#main-content -->
-</div><!-- /.container -->
- 
+    </div>
+  </div>
+</div>
+
 <script>
 const API = '/api/precommande-publique';
 let articlesData = [];
-let selection = {}; // { article_id: { taille, quantite } }
- 
-// ── Init ──────────────────────────────────────────────────────────────────
+// selection[artId] = [ {taille, quantite, enfantIdx} ]
+let selection = {};
+let nbEnfants = 0;
+
+const NIVEAUX = ['Petite Section (PS)','Moyenne Section (MS)','Grande Section (GS)','CP','CE1','CE2','CM1','CM2'];
+
+// ── Init
 async function init() {
+  addEnfant(); // au moins 1 enfant par défaut
   try {
     const res = await fetch(API);
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Erreur');
- 
-    // Campagne optionnelle
-    if (data.campagne?.annee) {
+    articlesData = data.articles || [];
+    if (data.campagne?.nom) {
+      document.getElementById('campagne-annee').textContent = data.campagne.nom;
+    } else if (data.campagne?.annee) {
       document.getElementById('campagne-annee').textContent = data.campagne.annee;
     } else {
       document.getElementById('campagne-annee').textContent = new Date().getFullYear();
-      // Masque la bannière campagne si pas de campagne ouverte
-      const banner = document.querySelector('.campagne-info');
-      if (banner) banner.style.display = 'none';
+      document.getElementById('campagne-banner').style.display = 'none';
     }
- 
-    articlesData = data.articles;
-    document.getElementById('state-loading').style.display = 'none';
-    document.getElementById('form-content').style.display = 'block';
-    renderArticles();
-  } catch (e) {
-    // En cas d'erreur réseau, on affiche quand même le formulaire vide
-    console.error('Init error:', e.message);
-    document.getElementById('state-loading').style.display = 'none';
-    document.getElementById('form-content').style.display = 'block';
-    renderArticles();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('campagne-banner').style.display = 'none';
+  }
+  document.getElementById('state-loading').style.display = 'none';
+  document.getElementById('form-content').style.display = 'block';
+  renderArticles();
+}
+
+// ── Enfants
+function addEnfant() {
+  const idx = nbEnfants++;
+  const container = document.getElementById('enfants-container');
+  const div = document.createElement('div');
+  div.className = 'enfant-block';
+  div.id = `enfant-${idx}`;
+  div.innerHTML = `
+    <div class="enfant-block-title">
+      <span>Enfant ${idx + 1}</span>
+      ${idx > 0 ? `<button class="btn-remove-enfant" onclick="removeEnfant(${idx})">Supprimer</button>` : ''}
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Nom <span>*</span></label>
+        <input type="text" class="form-control" id="enfant_nom_${idx}" placeholder="Dupont">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prénom <span>*</span></label>
+        <input type="text" class="form-control" id="enfant_prenom_${idx}" placeholder="Lucas">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Niveau / Classe <span>*</span></label>
+      <select class="form-control" id="niveau_${idx}">
+        <option value="">— Sélectionnez le niveau —</option>
+        ${NIVEAUX.map(n => `<option>${n}</option>`).join('')}
+      </select>
+    </div>`;
+  container.appendChild(div);
+  updateEnfantTitles();
+  updateArticleEnfantOptions();
+}
+
+function removeEnfant(idx) {
+  document.getElementById(`enfant-${idx}`)?.remove();
+  updateEnfantTitles();
+  updateArticleEnfantOptions();
+  updateRecap();
+}
+
+function getEnfants() {
+  const enfants = [];
+  for (let i = 0; i < nbEnfants; i++) {
+    if (!document.getElementById(`enfant-${i}`)) continue;
+    enfants.push({
+      idx: i,
+      nom: document.getElementById(`enfant_nom_${i}`)?.value?.trim() || '',
+      prenom: document.getElementById(`enfant_prenom_${i}`)?.value?.trim() || '',
+      niveau: document.getElementById(`niveau_${i}`)?.value?.trim() || '',
+    });
+  }
+  return enfants;
+}
+
+function updateEnfantTitles() {
+  let num = 1;
+  for (let i = 0; i < nbEnfants; i++) {
+    const block = document.getElementById(`enfant-${i}`);
+    if (!block) continue;
+    const titleSpan = block.querySelector('.enfant-block-title span');
+    if (titleSpan) titleSpan.textContent = `Enfant ${num++}`;
   }
 }
- 
-// ── Rendu articles ────────────────────────────────────────────────────────
-// selection = { article_id: [ {taille, quantite}, ... ] }
+
+function updateArticleEnfantOptions() {
+  const enfants = getEnfants();
+  document.querySelectorAll('.enfant-select').forEach(sel => {
+    const val = sel.value;
+    sel.innerHTML = `<option value="">— Pour quel enfant ? —</option>` +
+      enfants.map(e => `<option value="${e.idx}">${e.prenom || `Enfant ${e.idx+1}`}${e.nom ? ' '+e.nom : ''}</option>`).join('');
+    sel.value = val;
+  });
+}
+
+// ── Articles
+const ARTICLE_IMAGES = {
+  'polo': '/images/Polo_mc.jpg',
+  'polo mc': '/images/Polo_mc.jpg',
+  'polo manches courtes': '/images/Polo_mc.jpg',
+  'polo ml': '/images/Polo_ml.JPG',
+  'polo manches longues': '/images/Polo_ml.JPG',
+  'sweat': '/images/Sweat_ml.jpg',
+  'sweat ml': '/images/Sweat_ml.jpg',
+};
+
+function getArticleImage(art) {
+  if (art.image_url) return art.image_url;
+  const nomLower = (art.nom || '').toLowerCase();
+  for (const [key, url] of Object.entries(ARTICLE_IMAGES)) {
+    if (nomLower.includes(key)) return url;
+  }
+  return null;
+}
+
 function taillesOpts(art) {
   return (art.tailles || []).map(t => `<option value="${t}">${t}</option>`).join('');
 }
- 
+
 function renderLigneControls(artId, ligneIdx) {
   const art = articlesData.find(a => a.id === artId);
+  const enfants = getEnfants();
+  const enfantOpts = `<option value="">— Pour quel enfant ? —</option>` +
+    enfants.map(e => `<option value="${e.idx}">${e.prenom || `Enfant ${e.idx+1}`}${e.nom ? ' '+e.nom : ''}</option>`).join('');
+
   return `
     <div class="article-ligne" id="ligne-${artId}-${ligneIdx}">
+      ${enfants.length > 1 ? `
+      <div class="form-group" style="min-width:130px">
+        ${ligneIdx === 0 ? '<label class="form-label">Enfant</label>' : ''}
+        <select class="form-control enfant-select" onchange="updateLigne('${artId}',${ligneIdx},'enfantIdx',this.value)">${enfantOpts}</select>
+      </div>` : ''}
       <div class="form-group">
         ${ligneIdx === 0 ? '<label class="form-label">Taille</label>' : ''}
-        <select class="form-control" onchange="updateLigne('${artId}', ${ligneIdx}, 'taille', this.value)">
+        <select class="form-control" onchange="updateLigne('${artId}',${ligneIdx},'taille',this.value)">
           <option value="">— Taille —</option>
           ${taillesOpts(art)}
         </select>
       </div>
       <div class="form-group" style="max-width:90px">
         ${ligneIdx === 0 ? '<label class="form-label">Quantité</label>' : ''}
-        <input type="number" class="form-control" value="1" min="1" max="10"
-          onchange="updateLigne('${artId}', ${ligneIdx}, 'quantite', this.value)">
+        <input type="number" class="form-control" value="1" min="1" max="10" onchange="updateLigne('${artId}',${ligneIdx},'quantite',this.value)">
       </div>
-      ${ligneIdx > 0 ? `<button class="btn-remove-ligne" onclick="removeLigne('${artId}', ${ligneIdx})" title="Supprimer">×</button>` : '<div style="width:32px;flex-shrink:0"></div>'}
+      ${ligneIdx > 0 ? `<button class="btn-remove-ligne" onclick="removeLigne('${artId}',${ligneIdx})" title="Supprimer">×</button>` : '<div style="width:32px;flex-shrink:0"></div>'}
     </div>`;
 }
- 
+
 function renderArticles() {
   const grid = document.getElementById('articles-grid');
   grid.innerHTML = '';
- 
   if (!articlesData.length) {
     grid.innerHTML = '<p style="color:var(--text3);text-align:center;padding:24px">Aucun article disponible actuellement.</p>';
     return;
   }
- 
   articlesData.forEach(art => {
+    const imgUrl = getArticleImage(art);
+    const imgHtml = imgUrl
+      ? `<img src="${imgUrl}" alt="${art.nom}" class="article-img" onerror="this.style.display='none'">`
+      : `<div class="article-img-placeholder">👕</div>`;
+
     const div = document.createElement('div');
     div.className = 'article-item';
     div.id = `art-${art.id}`;
     div.innerHTML = `
-      <div class="article-header">
-        <div>
+      <div class="article-top">
+        ${imgHtml}
+        <div class="article-info">
           <div class="article-name">${art.nom}</div>
           ${art.description ? `<div class="article-desc">${art.description}</div>` : ''}
+          <div class="article-price">${art.prix?.toFixed(2).replace('.', ',')} €</div>
         </div>
-        <div class="article-price">${art.prix?.toFixed(2).replace('.', ',')} €</div>
+        <div class="article-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
       </div>
       <div class="article-controls" id="controls-${art.id}">
         <div id="lignes-${art.id}">${renderLigneControls(art.id, 0)}</div>
-        <button class="btn-add-taille" onclick="addLigne('${art.id}')">
-          + Ajouter une taille différente
-        </button>
+        <button class="btn-add-taille" onclick="addLigne('${art.id}')">+ Ajouter une taille différente</button>
       </div>`;
- 
+
     div.addEventListener('click', function(e) {
       if (['SELECT','INPUT','BUTTON'].includes(e.target.tagName)) return;
       toggleArticle(art.id);
     });
- 
     grid.appendChild(div);
   });
 }
- 
+
 function toggleArticle(id) {
   const item = document.getElementById(`art-${id}`);
   if (item.classList.contains('selected')) {
@@ -772,32 +523,31 @@ function toggleArticle(id) {
     delete selection[id];
   } else {
     item.classList.add('selected');
-    selection[id] = [{ taille: '', quantite: 1 }];
+    selection[id] = [{ taille: '', quantite: 1, enfantIdx: getEnfants()[0]?.idx ?? 0 }];
   }
   updateRecap();
 }
- 
+
 function addLigne(artId) {
   if (!selection[artId]) return;
   const idx = selection[artId].length;
-  selection[artId].push({ taille: '', quantite: 1 });
-  const container = document.getElementById(`lignes-${artId}`);
-  container.insertAdjacentHTML('beforeend', renderLigneControls(artId, idx));
+  selection[artId].push({ taille: '', quantite: 1, enfantIdx: getEnfants()[0]?.idx ?? 0 });
+  document.getElementById(`lignes-${artId}`).insertAdjacentHTML('beforeend', renderLigneControls(artId, idx));
   updateRecap();
 }
- 
+
 function removeLigne(artId, idx) {
   if (!selection[artId]) return;
   selection[artId].splice(idx, 1);
-  // Re-render toutes les lignes de cet article
   const container = document.getElementById(`lignes-${artId}`);
   container.innerHTML = selection[artId].map((_, i) => renderLigneControls(artId, i)).join('');
-  // Remet les valeurs sauvegardées
   selection[artId].forEach((l, i) => {
     const ligne = document.getElementById(`ligne-${artId}-${i}`);
     if (!ligne) return;
     ligne.querySelector('select').value = l.taille;
     ligne.querySelector('input').value = l.quantite;
+    const es = ligne.querySelector('.enfant-select');
+    if (es) es.value = l.enfantIdx ?? '';
   });
   if (!selection[artId].length) {
     document.getElementById(`art-${artId}`).classList.remove('selected');
@@ -805,82 +555,85 @@ function removeLigne(artId, idx) {
   }
   updateRecap();
 }
- 
+
 function updateLigne(artId, idx, field, value) {
   if (!selection[artId]?.[idx]) return;
-  selection[artId][idx][field] = field === 'quantite' ? (parseInt(value) || 1) : value;
+  selection[artId][idx][field] = field === 'quantite' ? (parseInt(value) || 1) : (field === 'enfantIdx' ? parseInt(value) : value);
   updateRecap();
 }
- 
-// ── Récapitulatif ─────────────────────────────────────────────────────────
+
+// ── Récap
 function updateRecap() {
   const lines = document.getElementById('recap-lines');
   const totalEl = document.getElementById('recap-total');
   const recap = document.getElementById('recap-section');
- 
+  const enfants = getEnfants();
   const entries = Object.entries(selection);
   if (!entries.length) { recap.style.display = 'none'; return; }
- 
   recap.style.display = 'block';
   lines.innerHTML = '';
   let total = 0;
- 
   entries.forEach(([id, lignes]) => {
     const art = articlesData.find(a => a.id === id);
     if (!art) return;
     lignes.forEach(l => {
       const sous = art.prix * l.quantite;
       total += sous;
+      const enfant = enfants.find(e => e.idx === l.enfantIdx);
+      const enfantLabel = enfant ? `${enfant.prenom || ''} ${enfant.nom || ''}`.trim() || `Enfant ${l.enfantIdx+1}` : '';
       const li = document.createElement('li');
       li.className = 'recap-line';
       li.innerHTML = `
         <div class="recap-line-info">
           <div class="recap-line-name">${art.nom}</div>
           <div class="recap-line-detail">Taille : ${l.taille || '—'} · Qté : ${l.quantite}</div>
+          ${enfants.length > 1 && enfantLabel ? `<div class="recap-line-child">Pour : ${enfantLabel}</div>` : ''}
         </div>
         <div class="recap-line-price">${sous.toFixed(2).replace('.', ',')} €</div>`;
       lines.appendChild(li);
     });
   });
- 
   totalEl.textContent = total.toFixed(2).replace('.', ',') + ' €';
 }
- 
-// ── Soumission ────────────────────────────────────────────────────────────
+
+// ── Submit
 async function submitForm() {
   const alertEl = document.getElementById('alert-global');
   alertEl.className = 'alert alert-error';
- 
   const g = id => document.getElementById(id)?.value?.trim();
- 
-  // Validation
+
   if (!g('parent_nom')) return showAlert('Le nom du parent est requis.');
   if (!g('parent_prenom')) return showAlert('Le prénom du parent est requis.');
   if (!g('parent_email')) return showAlert("L'adresse email est requise.");
-  if (!g('enfant_nom')) return showAlert("Le nom de l'enfant est requis.");
-  if (!g('enfant_prenom')) return showAlert("Le prénom de l'enfant est requis.");
-  if (!g('niveau')) return showAlert('Veuillez sélectionner un niveau.');
- 
+  if (!g('parent_tel')) return showAlert('Le numéro de téléphone est requis.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('parent_email'))) return showAlert('Adresse email invalide.');
+
+  const enfants = getEnfants();
+  for (const e of enfants) {
+    if (!e.nom) return showAlert(`Nom manquant pour l'enfant ${e.idx+1}.`);
+    if (!e.prenom) return showAlert(`Prénom manquant pour l'enfant ${e.idx+1}.`);
+    if (!e.niveau) return showAlert(`Niveau manquant pour l'enfant ${e.idx+1}.`);
+  }
+
   const entries = Object.entries(selection);
   if (!entries.length) return showAlert('Veuillez sélectionner au moins un article.');
- 
   for (const [id, lignes] of entries) {
     const art = articlesData.find(a => a.id === id);
     for (const l of lignes) {
       if (!l.taille) return showAlert(`Veuillez sélectionner une taille pour : ${art?.nom}`);
     }
   }
- 
+
   const lignes = entries.flatMap(([id, lignesArt]) => {
     const art = articlesData.find(a => a.id === id);
-    return lignesArt.map(l => ({ article_id: id, taille: l.taille, quantite: l.quantite, prix_unitaire: art.prix }));
+    return lignesArt.map(l => ({ article_id: id, taille: l.taille, quantite: l.quantite, prix_unitaire: art.prix, enfant_idx: l.enfantIdx ?? 0 }));
   });
- 
+
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.classList.add('loading');
   alertEl.classList.remove('show');
- 
+
   try {
     const res = await fetch(API, {
       method: 'POST',
@@ -890,41 +643,34 @@ async function submitForm() {
         parent_prenom: g('parent_prenom'),
         parent_email: g('parent_email'),
         parent_tel: g('parent_tel'),
-        enfant_nom: g('enfant_nom'),
-        enfant_prenom: g('enfant_prenom'),
-        niveau: g('niveau'),
-        note: g('note'),
+        enfants,
         lignes,
+        note: g('note'),
       }),
     });
- 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Erreur lors de l\'envoi');
- 
-    // Succès
+    if (!res.ok) throw new Error(data.error || "Erreur lors de l'envoi");
     document.getElementById('main-content').style.display = 'none';
     const total = lignes.reduce((s, l) => s + l.quantite * l.prix_unitaire, 0);
     document.getElementById('s-total').textContent = total.toFixed(2).replace('.', ',') + ' €';
     document.getElementById('s-id').textContent = 'Référence : ' + data.id;
     document.getElementById('success-screen').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
- 
-  } catch (e) {
+  } catch(e) {
     showAlert(e.message);
     btn.disabled = false;
     btn.classList.remove('loading');
   }
 }
- 
+
 function showAlert(msg) {
   const el = document.getElementById('alert-global');
   el.textContent = msg;
   el.classList.add('show');
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
- 
+
 init();
 </script>
 </body>
 </html>
- 
