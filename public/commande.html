@@ -31,6 +31,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 .container { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
 
 /* Intro */
+.form-logo { display: flex; justify-content: center; margin: 24px 0 12px; }
+.form-logo img { max-width: 220px; width: 100%; height: auto; }
+@media (max-width: 600px) {
+  .form-logo img { max-width: 170px; }
+}
 .intro { text-align: center; margin-bottom: 40px; }
 .intro-tag { display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); background: #FEF3C7; border: 1px solid #FDE68A; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; }
 .intro h2 { font-family: var(--serif); font-size: 36px; font-weight: 400; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 12px; }
@@ -147,7 +152,6 @@ textarea.form-control { resize: vertical; min-height: 72px; }
 
 <header class="site-header">
   <div class="header-left">
-    <img src="/images/LOGO_100%20ANS_STMICHEL-01.svg" onerror="this.onerror=null;this.src='/images/LOGO_100%20ANS_STMICHEL-01.png'" alt="Ensemble Scolaire Saint-Michel — 100 ans" class="header-logo">
     <div class="header-text">
       <h1>Saint Michel · Annecy</h1>
       <p>Groupe Scolaire · Uniformes scolaires</p>
@@ -179,6 +183,9 @@ textarea.form-control { resize: vertical; min-height: 72px; }
     </div>
 
     <div id="form-content" style="display:none">
+      <div class="form-logo">
+        <img src="/images/LOGO_100%20ANS_STMICHEL-01.svg" onerror="this.onerror=null;this.src='/images/LOGO_100%20ANS_STMICHEL-01.png'" alt="Ensemble Scolaire Saint-Michel — 100 ans">
+      </div>
       <div class="intro">
         <div class="intro-tag">Campagne <span id="campagne-annee"></span></div>
         <h2>Formulaire de précommande<br><em>d'uniformes scolaires</em></h2>
