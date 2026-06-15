@@ -107,6 +107,46 @@ export async function handler(event) {
     return ok({ id: pd.id, ...pd.data(), lignes, distribution: dSnap.empty ? null : { id: dSnap.docs[0].id, ...dSnap.docs[0].data() } });
   }
 
+  // PUT /precommandes/:id  — modifie uniquement les lignes (articles/tailles/quantités)
+  if (event.httpMethod === "PUT" && id) {
+    const pd = await db.collection("precommandes").doc(id).get();
+    if (!pd.exists) return err("Introuvable", 404);
+
+    // Bloquer si déjà distribuée
+    const dSnap = await db.collection("distributions").where("precommande_id", "==", id).limit(1).get();
+    if (!dSnap.empty) return err("Précommande déjà distribuée, modification interdite", 400);
+
+    const d = JSON.parse(event.body || "{}");
+    const lignesIn = Array.isArray(d.lignes) ? d.lignes : [];
+
+    // Valider chaque ligne contre la collection articles
+    const validees = [];
+    for (const l of lignesIn) {
+      if (!l.article_id || !l.taille || !l.quantite) continue;
+      const aDoc = await db.collection("articles").doc(l.article_id).get();
+      if (!aDoc.exists) return err(`Article introuvable : ${l.article_id}`, 400);
+      const article = aDoc.data();
+      if (!article.tailles?.includes(l.taille)) return err(`Taille invalide pour ${article.nom}`, 400);
+      validees.push({
+        article_id: l.article_id,
+        taille: l.taille,
+        quantite: Math.max(1, parseInt(l.quantite) || 1),
+        prix_unitaire: parseFloat(l.prix_unitaire) || article.prix,
+      });
+    }
+
+  // Remplace toutes les lignes en une transaction batch
+  const oldSnap = await db.collection("lignes_precommande").where("precommande_id", "==", id).get();
+  const batch = db.batch();
+  oldSnap.docs.forEach(doc => batch.delete(doc.ref));
+  for (const l of validees) {
+    const ref = db.collection("lignes_precommande").doc();
+    batch.set(ref, { precommande_id: id, ...l });
+  }
+  await batch.commit();
+  return ok({ ok: true, nb_lignes: validees.length });
+}
+
   // DELETE /precommandes/:id
   if (event.httpMethod === "DELETE" && id) {
     const lSnap = await db.collection("lignes_precommande").where("precommande_id", "==", id).get();
