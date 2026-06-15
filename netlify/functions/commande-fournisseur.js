@@ -16,7 +16,8 @@ export async function handler(event) {
   const campagne = await getCampagneActive(db);
   if (!campagne) return isExport ? err("Aucune campagne active") : ok([]);
 
-  const surplus_pct = campagne.surplus_pct || 10;
+  const qsSurp = parseInt(event.queryStringParameters?.surplus);
+  const surplus_pct = Number.isFinite(qsSurp) && qsSurp >= 0 ? qsSurp : (campagne.surplus_pct || 10);
   const pSnap = await db.collection("precommandes").where("campagne_id", "==", campagne.id).get();
 
   // Aggregate by article+taille

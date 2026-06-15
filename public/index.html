@@ -545,7 +545,7 @@ async function pgFournisseur() {
       <span style="font-size:12.5px;color:var(--text2)">%</span>
     </div>
     <div class="gap-row">
-      <button class="btn btn-secondary btn-sm" onclick="exportCSV('/api/commande-fournisseur/export','commande_fournisseur.csv')">↓ Export CSV</button>
+      <button class="btn btn-secondary btn-sm" onclick="exportCSV('/api/commande-fournisseur/export?surplus='+(parseInt(document.getElementById('surp').value)||0),'commande_fournisseur.csv')">↓ Export CSV</button>
       <button class="btn btn-success btn-sm" onclick="initStock()">✓ Réceptionner en stock</button>
     </div>
   </div>

@@ -363,29 +363,36 @@ function addEnfant() {
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Nom <span>*</span></label>
-        <input type="text" class="form-control" id="enfant_nom_${idx}" placeholder="Dupont">
+        <input type="text" class="form-control" id="enfant_nom_${idx}" placeholder="Dupont" oninput="onEnfantInfoChange()">
       </div>
       <div class="form-group">
         <label class="form-label">Prénom <span>*</span></label>
-        <input type="text" class="form-control" id="enfant_prenom_${idx}" placeholder="Lucas">
+        <input type="text" class="form-control" id="enfant_prenom_${idx}" placeholder="Lucas" oninput="onEnfantInfoChange()">
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Niveau / Classe <span>*</span></label>
-      <select class="form-control" id="niveau_${idx}">
+      <select class="form-control" id="niveau_${idx}" onchange="onEnfantInfoChange()">
         <option value="">— Sélectionnez le niveau —</option>
         ${NIVEAUX.map(n => `<option>${n}</option>`).join('')}
       </select>
     </div>`;
   container.appendChild(div);
   updateEnfantTitles();
-  updateArticleEnfantOptions();
+  refreshSelectedArticleLignes();
+  updateRecap();
 }
 
 function removeEnfant(idx) {
   document.getElementById(`enfant-${idx}`)?.remove();
+  // ré-indexer les selection.enfantIdx qui pointaient sur l'enfant supprimé
+  const remaining = new Set(getEnfants().map(e => e.idx));
+  const fallback = getEnfants()[0]?.idx ?? 0;
+  for (const artId of Object.keys(selection)) {
+    selection[artId].forEach(l => { if (!remaining.has(l.enfantIdx)) l.enfantIdx = fallback; });
+  }
   updateEnfantTitles();
-  updateArticleEnfantOptions();
+  refreshSelectedArticleLignes();
   updateRecap();
 }
 
@@ -410,6 +417,30 @@ function updateEnfantTitles() {
     if (!block) continue;
     const titleSpan = block.querySelector('.enfant-block-title span');
     if (titleSpan) titleSpan.textContent = `Enfant ${num++}`;
+  }
+}
+
+function onEnfantInfoChange() {
+  updateArticleEnfantOptions();
+  updateRecap();
+}
+
+function refreshSelectedArticleLignes() {
+  for (const artId of Object.keys(selection)) {
+    const container = document.getElementById(`lignes-${artId}`);
+    if (!container) continue;
+    container.innerHTML = selection[artId].map((_, i) => renderLigneControls(artId, i)).join('');
+    selection[artId].forEach((l, i) => {
+      const ligne = document.getElementById(`ligne-${artId}-${i}`);
+      if (!ligne) return;
+      const selects = ligne.querySelectorAll('select');
+      const sizeSel = ligne.querySelector('select:not(.enfant-select)');
+      if (sizeSel) sizeSel.value = l.taille || '';
+      const qty = ligne.querySelector('input[type="number"]');
+      if (qty) qty.value = l.quantite;
+      const es = ligne.querySelector('.enfant-select');
+      if (es) es.value = (l.enfantIdx ?? '') + '';
+    });
   }
 }
 
@@ -524,6 +555,9 @@ function toggleArticle(id) {
   } else {
     item.classList.add('selected');
     selection[id] = [{ taille: '', quantite: 1, enfantIdx: getEnfants()[0]?.idx ?? 0 }];
+    // synchroniser le DOM (sélecteur enfant doit afficher le premier enfant)
+    const es = document.querySelector(`#ligne-${id}-0 .enfant-select`);
+    if (es) es.value = (selection[id][0].enfantIdx ?? '') + '';
   }
   updateRecap();
 }
