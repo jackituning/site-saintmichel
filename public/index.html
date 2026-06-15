@@ -864,7 +864,7 @@ async function pgArticles() {
         <td><span class="badge ${a.actif?'badge-green':'badge-gray'}">${a.actif?'Actif':'Inactif'}</span></td>
         <td style="white-space:nowrap">
           <button class="btn btn-xs btn-secondary" onclick="openArticleForm('${a.id}')">Modifier</button>
-          <button class="btn btn-xs btn-danger" onclick="deleteArticle('${a.id}', ${JSON.stringify(a.nom)})">Supprimer</button>
+          <button class="btn btn-xs btn-danger" data-id="${a.id}" data-nom="${(a.nom||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}" onclick="deleteArticle(this)">Supprimer</button>
         </td>
       </tr>`).join('')}</tbody>
     </table>
@@ -933,10 +933,12 @@ async function submitArticle(id) {
   if(r.ok||r.id){closeModal();go('articles');}else alert('Erreur');
 }
 
-async function deleteArticle(id, nom) {
+async function deleteArticle(btn) {
+  const id = btn.dataset.id;
+  const nom = btn.dataset.nom || 'cet article';
   if(!confirm(`Supprimer définitivement l'article « ${nom} » ?\n\nCette action est irréversible.`)) return;
   const r = await api('/api/articles/'+id, 'DELETE');
-  if(r.ok){ go('articles'); } else { alert('Erreur lors de la suppression'); }
+  if(r && r.ok){ go('articles'); } else { alert('Erreur lors de la suppression'); }
 }
 
 // ── CAMPAGNES ─────────────────────────────────────────

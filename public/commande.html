@@ -466,6 +466,7 @@ const ARTICLE_IMAGES = {
 };
 
 function getArticleImage(art) {
+  if (art.image) return art.image;
   if (art.image_url) return art.image_url;
   const nomLower = (art.nom || '').toLowerCase();
   for (const [key, url] of Object.entries(ARTICLE_IMAGES)) {
@@ -555,9 +556,14 @@ function toggleArticle(id) {
   } else {
     item.classList.add('selected');
     selection[id] = [{ taille: '', quantite: 1, enfantIdx: getEnfants()[0]?.idx ?? 0 }];
-    // synchroniser le DOM (sélecteur enfant doit afficher le premier enfant)
-    const es = document.querySelector(`#ligne-${id}-0 .enfant-select`);
-    if (es) es.value = (selection[id][0].enfantIdx ?? '') + '';
+    // re-rendu obligatoire : le HTML initial a été produit avec le nb d'enfants au moment d'init(),
+    // pas avec le nb actuel
+    const container = document.getElementById(`lignes-${id}`);
+    if (container) {
+      container.innerHTML = renderLigneControls(id, 0);
+      const es = document.querySelector(`#ligne-${id}-0 .enfant-select`);
+      if (es) es.value = (selection[id][0].enfantIdx ?? '') + '';
+    }
   }
   updateRecap();
 }
