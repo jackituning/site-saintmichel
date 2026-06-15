@@ -23,6 +23,7 @@ export async function handler(event) {
     const ref = await db.collection("articles").add({
       nom: d.nom, description: d.description || "",
       tailles, prix: parseFloat(d.prix), actif: true, ordre: 0,
+      image: d.image || "",
     });
     return ok({ id: ref.id });
   }
@@ -37,10 +38,18 @@ export async function handler(event) {
   if (event.httpMethod === "PUT" && id) {
     const d = JSON.parse(event.body || "{}");
     const tailles = (d.tailles_str || "").split(",").map(t => t.trim()).filter(Boolean);
-    await db.collection("articles").doc(id).update({
+    const update = {
       nom: d.nom, description: d.description || "",
       tailles, prix: parseFloat(d.prix), actif: d.actif !== false,
-    });
+    };
+    if (typeof d.image === "string") update.image = d.image;
+    await db.collection("articles").doc(id).update(update);
+    return ok({ ok: true });
+  }
+
+  // DELETE /articles/:id
+  if (event.httpMethod === "DELETE" && id) {
+    await db.collection("articles").doc(id).delete();
     return ok({ ok: true });
   }
 
