@@ -854,21 +854,25 @@ async function pgArticles() {
   </div>
   <div class="card">
     <table>
-      <thead><tr><th>Nom</th><th>Description</th><th>Prix</th><th>Tailles</th><th>Statut</th><th></th></tr></thead>
+      <thead><tr><th>Image</th><th>Nom</th><th>Description</th><th>Prix</th><th>Tailles</th><th>Statut</th><th></th></tr></thead>
       <tbody>${data.map(a=>`<tr>
+        <td>${a.image?`<img src="${a.image}" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">`:`<div style="width:44px;height:44px;border-radius:6px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:10px">—</div>`}</td>
         <td><strong>${a.nom}</strong></td>
         <td style="color:var(--text2);font-size:12px">${a.description||'—'}</td>
         <td class="price">${a.prix.toFixed(2)} €</td>
         <td style="font-size:11px;color:var(--text2)">${(a.tailles||[]).join(' · ')}</td>
         <td><span class="badge ${a.actif?'badge-green':'badge-gray'}">${a.actif?'Actif':'Inactif'}</span></td>
-        <td><button class="btn btn-xs btn-secondary" onclick="openArticleForm('${a.id}')">Modifier</button></td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-xs btn-secondary" onclick="openArticleForm('${a.id}')">Modifier</button>
+          <button class="btn btn-xs btn-danger" onclick="deleteArticle('${a.id}', ${JSON.stringify(a.nom)})">Supprimer</button>
+        </td>
       </tr>`).join('')}</tbody>
     </table>
   </div>`);
 }
 
 async function openArticleForm(id=null) {
-  let a=id?(await api('/api/articles/'+id)):{nom:'',description:'',tailles:['2 ans','4 ans','6 ans','8 ans','10 ans','12 ans','S','M','L','XL'],prix:'',actif:true};
+  let a=id?(await api('/api/articles/'+id)):{nom:'',description:'',tailles:['2 ans','4 ans','6 ans','8 ans','10 ans','12 ans','S','M','L','XL'],prix:'',actif:true,image:''};
   modal(`
     <div class="modal-title">${id?'Modifier':'Nouvel'} article</div>
     <div class="form-row">
@@ -877,6 +881,13 @@ async function openArticleForm(id=null) {
     </div>
     <div class="form-group"><label class="form-label">Description</label><input class="form-control" id="ad" value="${a.description||''}"></div>
     <div class="form-group"><label class="form-label">Tailles disponibles (séparées par des virgules)</label><input class="form-control" id="at" value="${(a.tailles||[]).join(', ')}"></div>
+    <div class="form-group"><label class="form-label">Image de l'article</label>
+      <input type="hidden" id="aimg" value="${a.image||''}">
+      <input class="form-control" type="file" id="afile" accept="image/*" onchange="handleArticleImage(this)">
+      <div id="aimg-preview" style="margin-top:8px;display:flex;align-items:center;gap:12px">
+        ${a.image?`<img src="${a.image}" style="max-width:120px;max-height:120px;border-radius:8px;border:1px solid var(--border)"><button type="button" class="btn btn-xs btn-secondary" onclick="clearArticleImage()">Retirer</button>`:`<span style="color:var(--text3);font-size:12px">Aucune image (max 800px, redimensionnée auto)</span>`}
+      </div>
+    </div>
     <div class="form-group"><label class="form-label">Statut</label>
       <select class="form-control" id="aa"><option value="1" ${a.actif?'selected':''}>Actif</option><option value="0" ${!a.actif?'selected':''}>Inactif</option></select>
     </div>
@@ -886,11 +897,46 @@ async function openArticleForm(id=null) {
     </div>`);
 }
 
+function handleArticleImage(input) {
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 800;
+      let {width, height} = img;
+      if(width>height && width>maxDim){ height = Math.round(height*maxDim/width); width = maxDim; }
+      else if(height>maxDim){ width = Math.round(width*maxDim/height); height = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      document.getElementById('aimg').value = dataUrl;
+      document.getElementById('aimg-preview').innerHTML = `<img src="${dataUrl}" style="max-width:120px;max-height:120px;border-radius:8px;border:1px solid var(--border)"><button type="button" class="btn btn-xs btn-secondary" onclick="clearArticleImage()">Retirer</button>`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearArticleImage() {
+  document.getElementById('aimg').value = '';
+  document.getElementById('afile').value = '';
+  document.getElementById('aimg-preview').innerHTML = `<span style="color:var(--text3);font-size:12px">Aucune image</span>`;
+}
+
 async function submitArticle(id) {
-  const b={nom:v('an'),description:v('ad'),tailles_str:v('at'),prix:v('ap'),actif:+v('aa')};
+  const b={nom:v('an'),description:v('ad'),tailles_str:v('at'),prix:v('ap'),actif:+v('aa'),image:v('aimg')};
   if(!b.nom||!b.prix){alert('Nom et prix requis');return;}
   const r=id?await api('/api/articles/'+id,'PUT',b):await api('/api/articles','POST',b);
   if(r.ok||r.id){closeModal();go('articles');}else alert('Erreur');
+}
+
+async function deleteArticle(id, nom) {
+  if(!confirm(`Supprimer définitivement l'article « ${nom} » ?\n\nCette action est irréversible.`)) return;
+  const r = await api('/api/articles/'+id, 'DELETE');
+  if(r.ok){ go('articles'); } else { alert('Erreur lors de la suppression'); }
 }
 
 // ── CAMPAGNES ─────────────────────────────────────────
