@@ -45,6 +45,15 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 .campagne-info { background: linear-gradient(135deg, #1A1815 0%, #2D2926 100%); border-radius: var(--r); padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; color: rgba(255,255,255,.85); font-size: 13.5px; }
 .campagne-info strong { color: #fff; }
 
+/* Créneaux distribution */
+.creneaux-info { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: var(--r); padding: 18px 24px; margin-bottom: 28px; color: #78350F; font-size: 13.5px; display: none; }
+.creneaux-info-title { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.creneaux-list { display: flex; flex-direction: column; gap: 8px; }
+.creneau-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,.55); border-radius: 8px; }
+.creneau-item-icon { color: #92400E; flex-shrink: 0; margin-top: 1px; }
+.creneau-item-date { font-weight: 600; color: #78350F; text-transform: capitalize; }
+.creneau-item-detail { font-size: 12.5px; color: #92400E; margin-top: 3px; }
+
 /* Cards */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
 .card-head { padding: 18px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
@@ -166,7 +175,7 @@ textarea.form-control { resize: vertical; min-height: 72px; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
     <h2>Précommande confirmée !</h2>
-    <p>Votre précommande a bien été enregistrée.<br>Un email de confirmation vous a été envoyé.</p>
+    <p>Votre précommande a bien été enregistrée.</p>
     <div class="success-total" id="s-total"></div>
     <p style="font-size:13px;color:var(--text3)">Total à régler lors de la distribution</p>
     <div class="success-id" id="s-id"></div>
@@ -189,12 +198,20 @@ textarea.form-control { resize: vertical; min-height: 72px; }
       <div class="intro">
         <div class="intro-tag">Campagne <span id="campagne-annee"></span></div>
         <h2>Formulaire de précommande<br><em>d'uniformes scolaires</em></h2>
-        <p>Remplissez ce formulaire pour réserver les uniformes de vos enfants. Un email de confirmation vous sera envoyé.</p>
+        <p>Remplissez ce formulaire pour réserver les uniformes de vos enfants. </p>
       </div>
 
       <div class="campagne-info" id="campagne-banner">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         <div>Les précommandes sont actuellement <strong>ouvertes</strong>. Le règlement s'effectuera lors de la distribution des uniformes.</div>
+      </div>
+      
+      <div class="creneaux-info" id="creneaux-banner">
+        <div class="creneaux-info-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Créneaux de distribution prévus
+          </div>
+        <div class="creneaux-list" id="creneaux-list"></div>
       </div>
 
       <div id="alert-global" class="alert alert-error"></div>
@@ -316,7 +333,7 @@ textarea.form-control { resize: vertical; min-height: 72px; }
             Envoyer la précommande
           </span>
         </button>
-        <p class="submit-note">En soumettant ce formulaire, vous recevrez<br>un email de confirmation à l'adresse indiquée.</p>
+        <!--<p class="submit-note">En soumettant ce formulaire, vous recevrez<br>un email de confirmation à l'adresse indiquée.</p>-->
       </div>
     </div>
   </div>
@@ -330,6 +347,14 @@ let selection = {};
 let nbEnfants = 0;
 
 const NIVEAUX = ['Petite Section (PS)','Moyenne Section (MS)','Grande Section (GS)','CP','CE1','CE2','CM1','CM2'];
+
+function fmtDateFR(iso) {
+  if (!iso) return '';
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return iso;
+  const d = new Date(+m[1], +m[2]-1, +m[3]);
+  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
 
 // ── Init
 async function init() {
@@ -345,6 +370,23 @@ async function init() {
     } else {
       document.getElementById('campagne-annee').textContent = new Date().getFullYear();
       document.getElementById('campagne-banner').style.display = 'none';
+    }
+    // Affichage des créneaux de distribution
+    const creneaux = data.campagne?.creneaux || [];
+    if (creneaux.length) {
+      const list = document.getElementById('creneaux-list');
+      list.innerHTML = creneaux.map(cr => {
+        const dateText = fmtDateFR(cr.date_debut) + (cr.date_fin && cr.date_fin !== cr.date_debut ? ' → ' + fmtDateFR(cr.date_fin) : '');
+        const details = [cr.heure, cr.lieu].filter(Boolean).join(' · ');
+        return `<div class="creneau-item">
+          <svg class="creneau-item-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div>
+            <div class="creneau-item-date">${dateText || '(date à confirmer)'}</div>
+            ${details ? `<div class="creneau-item-detail">${details}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+      document.getElementById('creneaux-banner').style.display = 'block';
     }
   } catch(e) {
     console.error(e);
