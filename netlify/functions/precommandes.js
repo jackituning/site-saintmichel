@@ -24,41 +24,47 @@ export async function handler(event) {
       const campagne = await getCampagneActive(db);
       const all = event.queryStringParameters?.all;
 
-      // Pas d'orderBy ici : Firestore exclurait les docs sans created_at
-      const pSnap = (campagne && !all)
-        ? await db.collection("precommandes").where("campagne_id", "==", campagne.id).get()
-        : await db.collection("precommandes").get();
+      // 4 requêtes en parallèle au lieu de N+1 séquentielles
+      const [pSnap, lignesAllSnap, distAllSnap, articlesSnap] = await Promise.all([
+        (campagne && !all)
+          ? db.collection("precommandes").where("campagne_id", "==", campagne.id).get()
+          : db.collection("precommandes").get(),
+        db.collection("lignes_precommande").get(),
+        db.collection("distributions").get(),
+        db.collection("articles").get(),
+      ]);
 
-      // Tri en mémoire, robuste si created_at manquant
+      // Tri en mémoire (created_at parfois absent)
       const precommandes = pSnap.docs
         .map(d => ({ id: d.id, ...d.data() }))
         .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
 
-      // Cache articles
-      const articleCache = {};
-      const getArticle = async (aid) => {
-        if (!aid) return null;
-        if (articleCache[aid] !== undefined) return articleCache[aid];
-        try {
-          const doc = await db.collection("articles").doc(aid).get();
-          articleCache[aid] = doc.exists ? doc.data() : null;
-        } catch { articleCache[aid] = null; }
-        return articleCache[aid];
-      };
+      // Index pour lookups O(1)
+      const lignesByPid = {};
+      lignesAllSnap.docs.forEach(d => {
+        const l = d.data();
+        if (!l.precommande_id) return;
+        (lignesByPid[l.precommande_id] = lignesByPid[l.precommande_id] || []).push(l);
+      });
+      const distByPid = {};
+      distAllSnap.docs.forEach(d => {
+        const dist = d.data();
+        if (!dist.precommande_id) return;
+        if (!distByPid[dist.precommande_id]) distByPid[dist.precommande_id] = dist;
+      });
+      const articlesById = {};
+      articlesSnap.docs.forEach(d => { articlesById[d.id] = d.data(); });
 
       const rows = [["Nom parent","Prénom parent","Email","Téléphone","Nom enfant","Prénom enfant","Niveau","Article","Taille","Qté","Prix unitaire","Sous-total","Date","Distribué","Mode paiement"]];
       for (const p of precommandes) {
-        const lSnap = await db.collection("lignes_precommande").where("precommande_id", "==", p.id).get();
-        const dSnap = await db.collection("distributions").where("precommande_id", "==", p.id).limit(1).get();
-        const dist = dSnap.empty ? null : dSnap.docs[0].data();
-        if (lSnap.empty) {
-          // Précommande sans lignes : on émet quand même une ligne pour ne pas la cacher
+        const lignes = lignesByPid[p.id] || [];
+        const dist = distByPid[p.id] || null;
+        if (!lignes.length) {
           rows.push([p.parent_nom||"", p.parent_prenom||"", p.parent_email||"", p.parent_tel||"", p.enfant_nom||"", p.enfant_prenom||"", p.niveau||"", "", "", 0, 0, "0.00", p.created_at||"", dist ? "Oui" : "Non", dist?.mode_paiement || ""]);
           continue;
         }
-        for (const ld of lSnap.docs) {
-          const l = ld.data();
-          const art = await getArticle(l.article_id);
+        for (const l of lignes) {
+          const art = articlesById[l.article_id];
           const q = +l.quantite || 0;
           const pu = +l.prix_unitaire || 0;
           rows.push([
