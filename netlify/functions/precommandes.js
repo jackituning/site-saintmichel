@@ -20,27 +20,61 @@ export async function handler(event) {
 
   // GET /precommandes/export
   if (event.httpMethod === "GET" && id === "export") {
-    const campagne = await getCampagneActive(db);
-    const all = event.queryStringParameters?.all;
-    const pSnap = (campagne && !all)
-      ? await db.collection("precommandes").where("campagne_id", "==", campagne.id).orderBy("created_at", "desc").get()
-      : await db.collection("precommandes").orderBy("created_at", "desc").get();
-    const rows = [["Nom parent","Prénom parent","Email","Téléphone","Nom enfant","Prénom enfant","Niveau","Article","Taille","Qté","Prix unitaire","Sous-total","Date","Distribué","Mode paiement"]];
-    for (const pd of pSnap.docs) {
-      const p = pd.data();
-      const lSnap = await db.collection("lignes_precommande").where("precommande_id", "==", pd.id).get();
-      const dSnap = await db.collection("distributions").where("precommande_id", "==", pd.id).limit(1).get();
-      const dist = dSnap.empty ? null : dSnap.docs[0].data();
-      for (const ld of lSnap.docs) {
-        const l = ld.data();
-        const aDoc = await db.collection("articles").doc(l.article_id).get();
-        rows.push([p.parent_nom,p.parent_prenom,p.parent_email,p.parent_tel||"",p.enfant_nom,p.enfant_prenom,p.niveau,
-          aDoc.exists ? aDoc.data().nom : l.article_id, l.taille, l.quantite, l.prix_unitaire,
-          (l.quantite*l.prix_unitaire).toFixed(2), p.created_at, dist ? "Oui" : "Non", dist?.mode_paiement || ""]);
+    try {
+      const campagne = await getCampagneActive(db);
+      const all = event.queryStringParameters?.all;
+
+      // Pas d'orderBy ici : Firestore exclurait les docs sans created_at
+      const pSnap = (campagne && !all)
+        ? await db.collection("precommandes").where("campagne_id", "==", campagne.id).get()
+        : await db.collection("precommandes").get();
+
+      // Tri en mémoire, robuste si created_at manquant
+      const precommandes = pSnap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+
+      // Cache articles
+      const articleCache = {};
+      const getArticle = async (aid) => {
+        if (!aid) return null;
+        if (articleCache[aid] !== undefined) return articleCache[aid];
+        try {
+          const doc = await db.collection("articles").doc(aid).get();
+          articleCache[aid] = doc.exists ? doc.data() : null;
+        } catch { articleCache[aid] = null; }
+        return articleCache[aid];
+      };
+
+      const rows = [["Nom parent","Prénom parent","Email","Téléphone","Nom enfant","Prénom enfant","Niveau","Article","Taille","Qté","Prix unitaire","Sous-total","Date","Distribué","Mode paiement"]];
+      for (const p of precommandes) {
+        const lSnap = await db.collection("lignes_precommande").where("precommande_id", "==", p.id).get();
+        const dSnap = await db.collection("distributions").where("precommande_id", "==", p.id).limit(1).get();
+        const dist = dSnap.empty ? null : dSnap.docs[0].data();
+        if (lSnap.empty) {
+          // Précommande sans lignes : on émet quand même une ligne pour ne pas la cacher
+          rows.push([p.parent_nom||"", p.parent_prenom||"", p.parent_email||"", p.parent_tel||"", p.enfant_nom||"", p.enfant_prenom||"", p.niveau||"", "", "", 0, 0, "0.00", p.created_at||"", dist ? "Oui" : "Non", dist?.mode_paiement || ""]);
+          continue;
+        }
+        for (const ld of lSnap.docs) {
+          const l = ld.data();
+          const art = await getArticle(l.article_id);
+          const q = +l.quantite || 0;
+          const pu = +l.prix_unitaire || 0;
+          rows.push([
+            p.parent_nom||"", p.parent_prenom||"", p.parent_email||"", p.parent_tel||"",
+            p.enfant_nom||"", p.enfant_prenom||"", p.niveau||"",
+            art ? art.nom : (l.article_id||""), l.taille||"", q, pu,
+            (q * pu).toFixed(2), p.created_at||"", dist ? "Oui" : "Non", dist?.mode_paiement || ""
+          ]);
+        }
       }
+      const csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+      return { statusCode: 200, headers: { "Content-Type": "text/csv;charset=utf-8", "Content-Disposition": "attachment;filename=precommandes_export.csv" }, body: csv };
+    } catch (e) {
+      console.error("export error:", e);
+      return { statusCode: 200, headers: { "Content-Type": "text/csv;charset=utf-8", "Content-Disposition": "attachment;filename=precommandes_export.csv" }, body: "\uFEFF" + "Erreur lors de la génération du CSV : " + (e.message||"inconnue") };
     }
-    const csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
-    return { statusCode: 200, headers: { "Content-Type": "text/csv;charset=utf-8", "Content-Disposition": "attachment;filename=precommandes_export.csv" }, body: csv };
   }
 
   // GET /precommandes
