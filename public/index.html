@@ -562,9 +562,12 @@ async function pgFournisseur() {
 
 function renderFourniRows(data, surplus) {
   if (!data.length) return `<tr><td colspan=7 class="empty"><p>Aucune précommande enregistrée</p></td></tr>`;
-  return data.map(r=>{
+  let totalCmd = 0, totalMontant = 0;
+  const body = data.map(r=>{
     const surp=Math.ceil(r.qte_precommandee*surplus/100);
     const cmd=r.qte_precommandee+surp;
+    totalCmd += cmd;
+    totalMontant += cmd*r.prix;
     return `<tr>
       <td>${r.nom}</td><td>${r.taille}</td>
       <td class="num">${r.qte_precommandee}</td>
@@ -573,6 +576,13 @@ function renderFourniRows(data, surplus) {
       <td class="num">${r.prix.toFixed(2)} €</td>
       <td class="price">${fmt(cmd*r.prix)}</td>
     </tr>`;}).join('');
+  const totalRow = `<tr style="background:var(--surface2);font-weight:700;border-top:2px solid var(--border)">
+    <td colspan="4" style="text-align:right;text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--text2)">Total à commander</td>
+    <td class="num"><strong>${totalCmd}</strong></td>
+    <td></td>
+    <td class="price"><strong>${fmt(totalMontant)}</strong></td>
+  </tr>`;
+  return body + totalRow;
 }
 
 function updateFourni(data) {
