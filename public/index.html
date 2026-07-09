@@ -147,6 +147,35 @@ tbody tr:hover td{background:var(--bg)}
 </head>
 <body>
 
+<script>
+(function() {
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) location.reload();
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs) {
+      regs.forEach(function(r) { r.unregister(); });
+    }).catch(function(){});
+  }
+
+  if (window.caches && caches.keys) {
+    caches.keys().then(function(keys) {
+      keys.forEach(function(k) { caches.delete(k); });
+    }).catch(function(){});
+  }
+
+  var CURRENT_BUILD = '2026-07-09-01'; 
+  var seen = localStorage.getItem('sm_build');
+  if (seen && seen > CURRENT_BUILD) {
+    localStorage.setItem('sm_build', CURRENT_BUILD);
+    location.reload(true);
+  } else {
+    localStorage.setItem('sm_build', CURRENT_BUILD);
+  }
+})();
+</script>
+
 <div id="login">
   <div class="login-box">
     <div class="login-logo">
@@ -238,24 +267,47 @@ let CRENEAUX_BUFFER = [];
 
 // ── API ───────────────────────────────────────────────
 async function api(path, method='GET', body=null) {
-  const r = await fetch(path, {
-    method,
-    headers: {'Content-Type':'application/json', ...(TOKEN ? {'X-Token':TOKEN} : {})},
-    body: body ? JSON.stringify(body) : undefined
-  });
+  let url = path;
+  if (method === 'GET') {
+    url += (path.includes('?') ? '&' : '?') + '_=' + Date.now();
+  }
+  let r;
+  try {
+    r = await fetch(url, {
+      method,
+      cache: 'no-store',
+      headers: {
+        'Content-Type':'application/json',
+        'Cache-Control':'no-cache',
+        'Pragma':'no-cache',
+        ...(TOKEN ? {'X-Token':TOKEN} : {})
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+  } catch(e) {
+    console.error('Network error on', path, e);
+    return {};
+  }
   if (r.status === 204) return {};
   const ct = r.headers.get('content-type') || '';
   if (ct.includes('text/csv')) {
     const blob = await r.blob();
-    const url = URL.createObjectURL(blob);
+    const dlUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = ct.includes('precommandes') ? 'precommandes_export.csv' : 'commande_fournisseur.csv';
+    a.href = dlUrl;
+    a.download = path.includes('precommandes') ? 'precommandes_export.csv' : 'commande_fournisseur.csv';
     document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(dlUrl);
     return {};
   }
-  return r.json();
+  try {
+    const data = await r.json();
+    if (!r.ok) console.warn('API error', path, data);
+    return data;
+  } catch(e) {
+    console.error('JSON parse error on', path, e);
+    return {};
+  }
 }
 
 // ── AUTH ──────────────────────────────────────────────
