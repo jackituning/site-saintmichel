@@ -12,8 +12,16 @@ export async function handler(event) {
 
   // GET /articles
   if (event.httpMethod === "GET" && !id) {
-    const snap = await db.collection("articles").orderBy("ordre").get();
-    return ok(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const snap = await db.collection("articles").get();
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    items.sort((a, b) => {
+      const ao = +a.ordre, bo = +b.ordre;
+      const aok = Number.isFinite(ao), bok = Number.isFinite(bo);
+      if (aok && bok && ao !== bo) return ao - bo;
+      if (aok !== bok) return aok ? -1 : 1;
+      return String(a.nom || "").localeCompare(String(b.nom || ""));
+    });
+    return ok(items);
   }
 
   // POST /articles
